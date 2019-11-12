@@ -41,11 +41,13 @@ public class ArcadeApp extends Application {
     Rectangle name = new Rectangle(1280, 720);
     Timeline timeline = new Timeline();
     
-    //Scene scene; //= new Scene(animation(), 1280, 720);
-    
     GameOne gameOne;
     GameTwo gameTwo;
 
+    /**
+     * This method creates an HBox called menu and returns it into a new scene.
+     * @return The next HBox being created.
+     */
     public HBox menu() {
         HBox hbox = new HBox();
         Button gameOneButton = new Button();
@@ -70,6 +72,11 @@ public class ArcadeApp extends Application {
         return hbox;
     }
     
+    /**
+     * This method creates a group called animation and returns it into a new
+     * scene. Animation is the animated opening for the program.
+     * @return The group being returned.
+     */
     public Group animation() {
         Group group = new Group();
         group.getChildren().addAll(projectName, teamName, name);   
@@ -89,6 +96,9 @@ public class ArcadeApp extends Application {
         return group;
     }
     
+    /**
+     * Updates the scene to the previously specified {@code gameState}.
+     */
     public void updateScene() {
         if (gameState.equals("ANIMATION")) {
             stage.setScene(new Scene (animation(), 1280, 720));
@@ -104,31 +114,37 @@ public class ArcadeApp extends Application {
         }
     }
     
+    /**
+     * Creates the KeyFrame and timeline for the opening animation.
+     */
     public void startAnimation() {
         EventHandler<ActionEvent> handler = event -> moveRect();
-        KeyFrame keyFrame = new KeyFrame(Duration.millis(1000/60), handler);
+        KeyFrame keyFrame = new KeyFrame(Duration.millis(1000 / 60), handler);
         timeline.setCycleCount(Timeline.INDEFINITE);        
         timeline.getKeyFrames().add(keyFrame);
         timeline.play();
     }
-            
+    
+    /**
+     * Moves the rectangles (Pictures) across the screen for the animation.
+     */
     public void moveRect() {
         double changeAmount = 4;
         projectName.setX(projectName.getX() - changeAmount);
         teamName.setX(teamName.getX() - changeAmount);
         name.setX(name.getX() - changeAmount);
         try {
-            if(projectName.getX() == 0) {
+            if (projectName.getX() == 0) {
                 timeline.pause();
                 Thread.sleep(2000);
                 timeline.play();
             }
-            if(teamName.getX() == 0) {
+            if (teamName.getX() == 0) {
                 timeline.pause();
                 Thread.sleep(2000);
                 timeline.play();
             }
-            if(name.getX() == 0) {
+            if (name.getX() == 0) {
                 timeline.pause();
                 Thread.sleep(2000);
                 timeline.play();
@@ -136,7 +152,7 @@ public class ArcadeApp extends Application {
         } catch (InterruptedException e) {
             System.out.println("INTERRUPTION, MOM GET OUT OF MY ROOM!");
         }
-        if(name.getX() == -1280) {
+        if (name.getX() == -1280) {
             timeline.stop();
             gameState = "MENU";
             updateScene(); 
@@ -149,7 +165,6 @@ public class ArcadeApp extends Application {
         this.stage = stage;      
         stage.setTitle("cs1302-arcade!");
         updateScene();
-        //stage.setScene(scene);
         stage.sizeToScene();
         stage.show();
     } // start
