@@ -36,7 +36,7 @@ public class GameOne extends Group {
     public final int size = 36;
 
     /** size of the width of the game board */
-    public final int xSize = size * 10;
+    public final int xSize = size * 10 + 920;
 
     /** height of the game board */
     public final int ySize = xSize * 2;
@@ -50,7 +50,9 @@ public class GameOne extends Group {
 
     public GameOne() {
         this.getChildren().add(board);
-
+	Block temp = makeBlock();
+	
+	this.getChildren().addAll(temp.r1, temp.r2, temp.r3, temp.r4);
 
     }
     
@@ -108,26 +110,26 @@ public class GameOne extends Group {
             r4.setX(xSize / 2 + size);
             type = "green";
         } else if (color == 5) {
-            r1.setX(size / 2 - size);
+            r1.setX(xSize / 2 - size);
             r1.setY(size);
-            r2.setX(size / 2);
-            r3.setX(size / 2);
+            r2.setX(xSize / 2);
+            r3.setX(xSize / 2);
             r3.setY(size);
-            r4.setX(size / 2 + size);
+            r4.setX(xSize / 2 + size);
             r4.setY(size);
             type = "purple";
         } else if (color == 6) {
-            r1.setX(size / 2 - size);
-            r2.setX(size / 2);
-            r3.setX(size / 2);
+            r1.setX(xSize / 2 - size);
+            r2.setX(xSize / 2);
+            r3.setX(xSize / 2);
             r3.setY(size);
-            r4.setX(size / 2 + size);
+            r4.setX(xSize / 2 + size);
             r4.setY(size);
             type = "red";
         } else {
             System.out.println("Error");
         } //else
-
+	
 
         return new Block(r1, r2, r3, r4, type);
 
