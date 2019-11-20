@@ -43,9 +43,14 @@ public class GameOne extends Group {
 
     /** double array containing every possible spot for each block */
     public final int[][] grid = new int[xSize / size][ySize / size];
-    
+
+    /** Images to be used to the sides of the main game */
+    ImageView sideOne = new ImageView(new Image("file:resources/sideOne.png"));
+    ImageView sideTwo = new ImageView(new Image("file:resources/sideTwo.png"));
 
     public GameOne() {
+
+	
 	
 
     }
