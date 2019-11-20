@@ -77,54 +77,48 @@ public class GameOne extends Group {
             type = "cyan";
         } else if (color == 1) {
             r1.setX(xSize / 2 - size);
+            r1.setY(0 - size);
             r2.setX(xSize / 2 - size);
-            r2.setY(size);
             r3.setX(xSize / 2);
-            r3.setY(size);
             r4.setX(xSize / 2 + size);
-            r4.setY(size);
             type = "blue";
         } else if (color == 2) {
             r1.setX(xSize / 2 - size);
-            r1.setY(size);
             r2.setX(xSize / 2);
-            r2.setY(size);
             r3.setX(xSize / 2 + size);
-            r3.setY(size);
             r4.setX(xSize / 2 + size);
+            r4.setY(0 - size);
             type = "orange";
         } else if (color == 3) {
             r1.setX(xSize / 2 - size);
+            r1.setY(0 - size);
             r2.setX(xSize / 2);
+            r2.setY(0 - size);
             r3.setX(xSize / 2 - size);
-            r3.setY(size);
             r4.setX(xSize / 2);
-            r4.setY(size);
             type = "yellow";
         }  else if(color == 4) {
             r1.setX(xSize / 2 - size);
-            r1.setY(size);
             r2.setX(xSize / 2);
-            r2.setY(size);
             r3.setX(xSize / 2);
+            r3.setY(0 - size);
             r4.setX(xSize / 2 + size);
+            r4.setY(0 - size);
             type = "green";
         } else if (color == 5) {
             r1.setX(xSize / 2 - size);
-            r1.setY(size);
             r2.setX(xSize / 2);
+            r2.setY(0 - size);
             r3.setX(xSize / 2);
-            r3.setY(size);
             r4.setX(xSize / 2 + size);
-            r4.setY(size);
             type = "purple";
         } else if (color == 6) {
             r1.setX(xSize / 2 - size);
+            r1.setY(0 - size);
             r2.setX(xSize / 2);
+            r2.setY(0 - size);
             r3.setX(xSize / 2);
-            r3.setY(size);
             r4.setX(xSize / 2 + size);
-            r4.setY(size);
             type = "red";
         } else {
             System.out.println("Error");
