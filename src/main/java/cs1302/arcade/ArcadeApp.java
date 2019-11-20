@@ -34,7 +34,7 @@ import javafx.util.Duration;
  */
 public class ArcadeApp extends Application {
     
-    String gameState = "ANIMATION";
+    String gameState = "MENU";
     Stage stage;
     Rectangle projectName = new Rectangle(1280, 720);
     Rectangle teamName = new Rectangle(1280, 720);
@@ -107,10 +107,13 @@ public class ArcadeApp extends Application {
 	    stage.setTitle("Menu");
             System.out.println("MENU");
         } else if (gameState.equals("GAMEONE")) {
+            gameOne = new GameOne();
             stage.setScene(new Scene(gameOne, 1280, 720));
-	    stage.setTitle("Tetris");
+            stage.setTitle("Tetris");
         } else if (gameState.equals("GAMETWO")) {
+            gameTwo = new GameTwo();
             stage.setScene(new Scene(gameTwo, 1280, 720));
+            stage.setTitle("Chess");
 	    stage.setTitle("Chess");
         } else { 
             System.out.println("INVALID GAMESTATE");
@@ -155,7 +158,7 @@ public class ArcadeApp extends Application {
         } catch (InterruptedException e) {
             System.out.println("INTERRUPTION, MOM GET OUT OF MY ROOM!");
         }
-        if (name.getX() == -1280) {
+        if (name.getX() == -1300) {
             timeline.stop();
             gameState = "MENU";
             updateScene(); 

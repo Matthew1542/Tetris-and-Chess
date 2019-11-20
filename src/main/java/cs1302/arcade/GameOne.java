@@ -49,88 +49,88 @@ public class GameOne extends Group {
 
 
     public GameOne() {
-	this.getChildren().add(board);
-	
-       
-    }
+        this.getChildren().add(board);
 
+
+    }
+    
     /**
      * Makes the block to be used
      *
-     * @return 
-     */ 
+     * @return
+     */
     public Block makeBlock() {
-	int color = (int) (Math.random() * 6);
-	String type = "temp";
-	Rectangle r1 = new Rectangle(size, size);
-	Rectangle r2 = new Rectangle(size, size);
-	Rectangle r3 = new Rectangle(size, size);
-	Rectangle r4 = new Rectangle(size, size);
+        int color = (int) (Math.random() * 6);
+        String type = "temp";
+        Rectangle r1 = new Rectangle(size, size);
+        Rectangle r2 = new Rectangle(size, size);
+        Rectangle r3 = new Rectangle(size, size);
+        Rectangle r4 = new Rectangle(size, size);
 
-	if (color == 0) { //the color cyan block will be made
-	    r1.setX(xSize / 2 - size * 2);
-	    r2.setX(xSize / 2 - size);
-	    r3.setX(xSize / 2);
-	    r4.setX(xSize / 2 + size);
-	    type = "cyan";
-	} else if (color == 1) {
-	    r1.setX(xSize / 2 - size);
-	    r2.setX(xSize / 2 - size);
-	    r2.setY(size);
-	    r3.setX(xSize / 2);
-	    r3.setY(size);
-	    r4.setX(xSize / 2 + size);
-	    r4.setY(size);
-	    type = "blue";
-	} else if (color == 2) {
-	    r1.setX(xSize / 2 - size);
-	    r1.setY(size);
-	    r2.setX(xSize / 2);
-	    r2.setY(size);
-	    r3.setX(xSize / 2 + size);
-	    r3.setY(size);
-	    r4.setX(xSize / 2 + size);
-	    type = "orange";
-	} else if (color == 3) {
-	    r1.setX(xSize / 2 - size);
-	    r2.setX(xSize / 2);
-	    r3.setX(xSize / 2 - size);
-	    r3.setY(size);
-	    r4.setX(xSize / 2);
-	    r4.setY(size);
-	    type = "yellow";	    
-	}  else if(color == 4) {
-	    r1.setX(xSize / 2 - size);
-	    r1.setY(size);
-	    r2.setX(xSize / 2);
-	    r2.setY(size);
-	    r3.setX(xSize / 2);
-	    r4.setX(xSize / 2 + size);
-	    type = "green";
-	} else if (color == 5) {
-	    r1.setX(size / 2 - size);
-	    r1.setY(size);
-	    r2.setX(size / 2);
-	    r3.setX(size / 2);
-	    r3.setY(size);
-	    r4.setX(size / 2 + size);
-	    r4.setY(size);
-	    type = "purple";
-	} else if (color == 6) {
-	    r1.setX(size / 2 - size);
-	    r2.setX(size / 2);
-	    r3.setX(size / 2);
-	    r3.setY(size);
-	    r4.setX(size / 2 + size);
-	    r4.setY(size);
-	    type = "red";
-	} else {
-	    System.out.println("Error");
-	} //else
+        if (color == 0) { //the color cyan block will be made
+            r1.setX(xSize / 2 - size * 2);
+            r2.setX(xSize / 2 - size);
+            r3.setX(xSize / 2);
+            r4.setX(xSize / 2 + size);
+            type = "cyan";
+        } else if (color == 1) {
+            r1.setX(xSize / 2 - size);
+            r2.setX(xSize / 2 - size);
+            r2.setY(size);
+            r3.setX(xSize / 2);
+            r3.setY(size);
+            r4.setX(xSize / 2 + size);
+            r4.setY(size);
+            type = "blue";
+        } else if (color == 2) {
+            r1.setX(xSize / 2 - size);
+            r1.setY(size);
+            r2.setX(xSize / 2);
+            r2.setY(size);
+            r3.setX(xSize / 2 + size);
+            r3.setY(size);
+            r4.setX(xSize / 2 + size);
+            type = "orange";
+        } else if (color == 3) {
+            r1.setX(xSize / 2 - size);
+            r2.setX(xSize / 2);
+            r3.setX(xSize / 2 - size);
+            r3.setY(size);
+            r4.setX(xSize / 2);
+            r4.setY(size);
+            type = "yellow";
+        }  else if(color == 4) {
+            r1.setX(xSize / 2 - size);
+            r1.setY(size);
+            r2.setX(xSize / 2);
+            r2.setY(size);
+            r3.setX(xSize / 2);
+            r4.setX(xSize / 2 + size);
+            type = "green";
+        } else if (color == 5) {
+            r1.setX(size / 2 - size);
+            r1.setY(size);
+            r2.setX(size / 2);
+            r3.setX(size / 2);
+            r3.setY(size);
+            r4.setX(size / 2 + size);
+            r4.setY(size);
+            type = "purple";
+        } else if (color == 6) {
+            r1.setX(size / 2 - size);
+            r2.setX(size / 2);
+            r3.setX(size / 2);
+            r3.setY(size);
+            r4.setX(size / 2 + size);
+            r4.setY(size);
+            type = "red";
+        } else {
+            System.out.println("Error");
+        } //else
 
 
-	return new Block(r1, r2, r3, r4, type);
+        return new Block(r1, r2, r3, r4, type);
 
     } //makeBlock
-    
+
 }
