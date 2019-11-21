@@ -53,7 +53,7 @@ public class GameOne {
     /** Images to be used to the sides of the main game. */
     ImageView board = new ImageView(new Image("file:resources/board.png"));
 
-    int score; //the score of the game
+    int score = 0; //the score of the game
     Block mainBlock;
     Block nextBlock = makeBlock();
     Timeline timeline = new Timeline(); //create new timeline
@@ -73,9 +73,9 @@ public class GameOne {
                 grid[i][x] = 0; //fill grid with 0's
             } //for
         } //for
-        Text score = new Text("Score: ");
-        score.setX(935);
-        score.setY(100);
+        Text scoreText = new Text("Score: " + score);
+        scoreText.setX(935);
+        scoreText.setY(100);
         Button quit = new Button("Quit");
         quit.setTranslateX(50);
         quit.setTranslateY(50);
@@ -88,7 +88,7 @@ public class GameOne {
         group.getChildren().addAll(board, quit);
         Block temp = nextBlock;
 
-        group.getChildren().addAll(temp.r1, temp.r2, temp.r3, temp.r4, score);
+        group.getChildren().addAll(temp.r1, temp.r2, temp.r3, temp.r4, scoreText);
         moveOnKeyPressed(temp);
         mainBlock = temp;
         nextBlock = makeBlock();
@@ -128,6 +128,7 @@ public class GameOne {
                         break;
                     case DOWN:
                         moveDown(block);
+                        score++;
                     }
                 }
             });
@@ -183,7 +184,7 @@ public class GameOne {
                 grid[(int)(block.r2.getX() - 460) / 36][(int)block.r2.getY() / 36] = 1;
                 grid[(int)(block.r3.getX() - 460) / 36][(int)block.r3.getY() / 36] = 1;
                 grid[(int)(block.r4.getX() - 460) / 36][(int)block.r4.getY() / 36] = 1;
-
+                score += 40;
                 Block temp = nextBlock;
                 nextBlock = makeBlock();
                 mainBlock = temp;
