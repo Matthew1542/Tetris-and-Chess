@@ -59,6 +59,7 @@ public class GameOne {
     Timeline timeline = new Timeline(); //create new timeline
     Group group = new Group();
     Scene scene;
+    Text scoreText;
     ArcadeApp app;
 
     /**
@@ -73,7 +74,7 @@ public class GameOne {
                 grid[i][x] = 0; //fill grid with 0's
             } //for
         } //for
-        Text scoreText = new Text("Score: " + score);
+        scoreText = new Text("Score: " + score);
         scoreText.setX(935);
         scoreText.setY(100);
         Button quit = new Button("Quit");
@@ -159,7 +160,7 @@ public class GameOne {
         
         if (playing) {
             moveDown(mainBlock);
-            
+            scoreText.setText("Score: " + score);
         }
     }
     
