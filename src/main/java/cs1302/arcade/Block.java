@@ -5,6 +5,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
 
+/**
+ * The class that creates a block.
+ *
+ */ 
 public class Block {
 
     Rectangle r1;
@@ -16,6 +20,15 @@ public class Block {
 
     ImagePattern png;
 
+    /**
+     * Constructor to make a new block.
+     *
+     * @param r1 the left most square
+     * @param r2 the second square
+     * @param r3 the third square 
+     * @param r4 the final square
+     * @param type the color of the boxes
+     */
     public Block(Rectangle r1, Rectangle r2, Rectangle r3, Rectangle r4, String type) {
         this.type = type;
 

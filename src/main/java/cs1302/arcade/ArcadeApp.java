@@ -104,7 +104,7 @@ public class ArcadeApp extends Application {
             stage.setScene(new Scene (animation(), 1280, 720));
         } else if (gameState.equals("MENU")) {
             stage.setScene(new Scene(menu(), 1280, 720));
-	    stage.setTitle("Menu");
+            stage.setTitle("Menu");
             System.out.println("MENU");
         } else if (gameState.equals("GAMEONE")) {
             gameOne = new GameOne();
@@ -114,7 +114,7 @@ public class ArcadeApp extends Application {
             gameTwo = new GameTwo();
             stage.setScene(new Scene(gameTwo, 1280, 720));
             stage.setTitle("Chess");
-	    stage.setTitle("Chess");
+            stage.setTitle("Chess");
         } else { 
             System.out.println("INVALID GAMESTATE");
         }

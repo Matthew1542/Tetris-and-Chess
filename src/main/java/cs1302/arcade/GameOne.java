@@ -32,24 +32,24 @@ import javafx.animation.KeyFrame;
 
 
 /**
- * This class is a javaFX made game of tetris
+ * This class is a javaFX made game of tetris.
  *
  */
 public class GameOne {
 
-    /** size of each block */
+    /** size of each block. */
     public final int size = 36;
 
-    /** size of the width of the game board */
+    /** size of the width of the game board. */
     public final int xSize = size * 10 + 920;
 
-    /** height of the game board */
+    /** height of the game board. */
     public final int ySize = xSize * 2;
 
-    /** double array containing every possible spot for each block */
+    /** double array containing every possible spot for each block. */
     public final int[][] grid = new int[10][20];
 
-    /** Images to be used to the sides of the main game */
+    /** Images to be used to the sides of the main game. */
     ImageView board = new ImageView(new Image("file:resources/board.png"));
 
     int score; //the score of the game
@@ -58,6 +58,11 @@ public class GameOne {
     Timeline timeline = new Timeline(); //create new timeline
     Group group = new Group();
     Scene scene;
+
+    /**
+     * The constructor of the tetris game.
+     *
+     */
     public GameOne() {
         scene = new Scene(group, 1280, 720);
         group.getChildren().add(board);
@@ -84,12 +89,22 @@ public class GameOne {
         timeline.play();
         group.requestFocus();
     } //main/constructor
-    
+
+    /**
+     * Getter for the scene. 
+     *
+     * @return the scene 
+     */
     public Scene getScene() {
         return scene;
     }
 
 
+    /**
+     * The method that results in a moving block. 
+     *
+     * @param block the block to be moved
+     */
     private void moveOnKeyPressed (Block block) {
         group.setOnKeyPressed(new EventHandler<KeyEvent>() {
                 public void handle(KeyEvent event) {
@@ -109,7 +124,7 @@ public class GameOne {
      * The method that causes the block to fall down by its size,
      * every 10 seconds.
      *
-     *
+     * @param block the block to fall down
      */
     public void moveDown(Block block) {
         if (block.r1.getY() == 684 || block.r2.getY() == 684 ||
@@ -151,57 +166,65 @@ public class GameOne {
 
     }  //movDown
 
+    /**
+     * Moves the block one spot to the left.
+     *
+     * @param block the block to be moved
+     */
     public void moveLeft(Block block) {
-    try {
-        if (block.r1.getX() - 460 - size >= 0 && block.r2.getX() - 460 - size >= 0 &&
-            block.r3.getX() - 460 - size >= 0 && block.r4.getX() - 460 - size >= 0 &&
-            grid[((int)(block.r1.getX() - 460) / 36) - 1][(int)block.r1.getY() / 36] == 0 &&
-            grid[((int)(block.r2.getX() - 460) / 36) - 1][(int)block.r2.getY() / 36] == 0 &&
-            grid[((int)(block.r3.getX() - 460) / 36) - 1][(int)block.r3.getY() / 36] == 0 &&
-            grid[((int)(block.r4.getX() - 460) / 36) - 1][(int)block.r4.getY() / 36] == 0)  {
-            //checking if the spot below is free for taking
-            block.r1.setX(block.r1.getX() - 36);
-            block.r2.setX(block.r2.getX() - 36);
-            block.r3.setX(block.r3.getX() - 36);
-            block.r4.setX(block.r4.getX() - 36);
-        } //if
-    } catch (ArrayIndexOutOfBoundsException e) {
-        //if it is attmpted to be moved too early.
-    }
-    }
-
-    public void moveRight(Block block) {
-    try {
-        if (block.r1.getX() - 460 + size < 360 && block.r2.getX() - 460 + size < 360 &&
-            block.r3.getX() - 460 + size < 360 && block.r4.getX() - 460 + size < 360 &&
-            grid[((int)(block.r1.getX() - 460) / 36) + 1][(int)block.r1.getY() / 36] == 0 &&
-            grid[((int)(block.r2.getX() - 460) / 36) + 1][(int)block.r2.getY() / 36] == 0 &&
-            grid[((int)(block.r3.getX() - 460) / 36) + 1][(int)block.r3.getY() / 36] == 0 &&
-            grid[((int)(block.r4.getX() - 460) / 36) + 1][(int)block.r4.getY() / 36] == 0)  {
-            //checking if the spot below is free for taking
-            block.r1.setX(block.r1.getX() + 36);
-            block.r2.setX(block.r2.getX() + 36);
-            block.r3.setX(block.r3.getX() + 36);
-            block.r4.setX(block.r4.getX() + 36);
-        } //if
+        try {
+            if (block.r1.getX() - 460 - size >= 0 && block.r2.getX() - 460 - size >= 0 &&
+                block.r3.getX() - 460 - size >= 0 && block.r4.getX() - 460 - size >= 0 &&
+                grid[((int)(block.r1.getX() - 460) / 36) - 1][(int)block.r1.getY() / 36] == 0 &&
+                grid[((int)(block.r2.getX() - 460) / 36) - 1][(int)block.r2.getY() / 36] == 0 &&
+                grid[((int)(block.r3.getX() - 460) / 36) - 1][(int)block.r3.getY() / 36] == 0 &&
+                grid[((int)(block.r4.getX() - 460) / 36) - 1][(int)block.r4.getY() / 36] == 0)  {
+                //checking if the spot below is free for taking
+                block.r1.setX(block.r1.getX() - 36);
+                block.r2.setX(block.r2.getX() - 36);
+                block.r3.setX(block.r3.getX() - 36);
+                block.r4.setX(block.r4.getX() - 36);
+            } //if
         } catch (ArrayIndexOutOfBoundsException e) {
-        //if it is attmpted to be moved too early.
-    }
+            return;
+        }
+    } //move left
+
+    /**
+     * Moves block to the right.
+     *
+     * @param block the moving item
+     */ 
+    public void moveRight(Block block) {
+        try {
+            if (block.r1.getX() - 460 + size < 360 && block.r2.getX() - 460 + size < 360 &&
+                block.r3.getX() - 460 + size < 360 && block.r4.getX() - 460 + size < 360 &&
+                grid[((int)(block.r1.getX() - 460) / 36) + 1][(int)block.r1.getY() / 36] == 0 &&
+                grid[((int)(block.r2.getX() - 460) / 36) + 1][(int)block.r2.getY() / 36] == 0 &&
+                grid[((int)(block.r3.getX() - 460) / 36) + 1][(int)block.r3.getY() / 36] == 0 &&
+                grid[((int)(block.r4.getX() - 460) / 36) + 1][(int)block.r4.getY() / 36] == 0)  {
+                //checking if the spot below is free for taking
+                block.r1.setX(block.r1.getX() + 36);
+                block.r2.setX(block.r2.getX() + 36);
+                block.r3.setX(block.r3.getX() + 36);
+                block.r4.setX(block.r4.getX() + 36);
+            } //if
+        } catch (ArrayIndexOutOfBoundsException e) {
+            return;
+        } //catch
     }
 
     /**
-     * Makes the block to be used
+     * Makes the block to be used.
      *
-     * @return
+     * @return the block to be created
      */
     public Block makeBlock() {
         int color = (int) (Math.random() * 7);
         String type = "temp";
-        Rectangle r1 = new Rectangle(size, size);
-        Rectangle r2 = new Rectangle(size, size);
+        Rectangle r1 = new Rectangle(size, size), r2 = new Rectangle(size, size);       
         Rectangle r3 = new Rectangle(size, size);
         Rectangle r4 = new Rectangle(size, size);
-
         if (color == 0) { //the color cyan block will be made
             r1.setX(xSize / 2 - size * 2);
             r2.setX(xSize / 2 - size);
@@ -230,7 +253,7 @@ public class GameOne {
             r3.setX(xSize / 2 - size);
             r4.setX(xSize / 2);
             type = "yellow";
-        }  else if(color == 4) {
+        }  else if (color == 4) {
             r1.setX(xSize / 2 - size);
             r2.setX(xSize / 2);
             r3.setX(xSize / 2);
@@ -253,9 +276,7 @@ public class GameOne {
             r3.setX(xSize / 2);
             r4.setX(xSize / 2 + size);
             type = "red";
-        } else {
-            System.out.println("Error");
-        } //else
+        } //else if
         return new Block(r1, r2, r3, r4, type);
     } //makeBlock
 
