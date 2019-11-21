@@ -105,9 +105,8 @@ public class ArcadeApp extends Application {
         } else if (gameState.equals("MENU")) {
             stage.setScene(new Scene(menu(), 1280, 720));
             stage.setTitle("Menu");
-            System.out.println("MENU");
         } else if (gameState.equals("GAMEONE")) {
-            gameOne = new GameOne();
+            gameOne = new GameOne(this);
             stage.setScene(gameOne.getScene());
             stage.setTitle("Tetris");
         } else if (gameState.equals("GAMETWO")) {

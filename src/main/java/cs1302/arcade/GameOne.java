@@ -29,7 +29,8 @@ import javafx.scene.text.Text;
 import javafx.util.Duration;
 import javafx.animation.Timeline;
 import javafx.animation.KeyFrame;
-
+import javafx.scene.control.Button;
+import javafx.scene.paint.Color;
 
 /**
  * This class is a javaFX made game of tetris.
@@ -58,14 +59,15 @@ public class GameOne {
     Timeline timeline = new Timeline(); //create new timeline
     Group group = new Group();
     Scene scene;
+    ArcadeApp app;
 
     /**
      * The constructor of the tetris game.
      *
      */
-    public GameOne() {
+    public GameOne(ArcadeApp app) {
+        this.app = app;
         scene = new Scene(group, 1280, 720);
-        group.getChildren().add(board);
         for (int i = 0; i < 10; i++) {
             for (int x = 0; x < 20; x++) {
                 grid[i][x] = 0; //fill grid with 0's
@@ -74,7 +76,16 @@ public class GameOne {
         Text score = new Text("Score: ");
         score.setX(935);
         score.setY(100);
-
+        Button quit = new Button("Quit");
+        quit.setTranslateX(50);
+        quit.setTranslateY(50);
+        quit.setOnAction(new EventHandler<ActionEvent>() {
+            @Override public void handle(ActionEvent e) {
+                app.gameState = "MENU";
+                app.updateScene();
+            }
+        });
+        group.getChildren().addAll(board, quit);
         Block temp = nextBlock;
 
         group.getChildren().addAll(temp.r1, temp.r2, temp.r3, temp.r4, score);
@@ -82,7 +93,7 @@ public class GameOne {
         mainBlock = temp;
         nextBlock = makeBlock();
 
-        EventHandler<ActionEvent> handler = event -> moveDown(mainBlock);
+        EventHandler<ActionEvent> handler = event -> runner();
         KeyFrame keyFrame = new KeyFrame(Duration.millis(400), handler);
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.getKeyFrames().add(keyFrame);
@@ -115,11 +126,42 @@ public class GameOne {
                     case RIGHT: // KeyCode.RIGHT
                         moveRight(block);
                         break;
+                    case DOWN:
+                        moveDown(block);
                     }
                 }
             });
     }
 
+    int timer = 0;
+    boolean playing = true;
+    public void runner() {
+        if (mainBlock.r1.getY() == 0 || mainBlock.r2.getY() == 0 ||
+            mainBlock.r3.getY() == 0 || mainBlock.r4.getY() == 0) {
+            timer++;
+        } else {
+            timer = 0;
+        }
+        if (timer == 3) {      
+            Text gameOver = new Text("GAME OVER");
+            gameOver.setX(600);
+            gameOver.setY(360);
+            gameOver.setFill(Color.RED);
+            group.getChildren().add(gameOver);
+            playing = false;
+        }
+        
+        if (timer == 20) {
+            app.gameState = "MENU";
+            app.updateScene();
+        }
+        
+        if (playing) {
+            moveDown(mainBlock);
+            
+        }
+    }
+    
     /**
      * The method that causes the block to fall down by its size,
      * every 10 seconds.
@@ -127,43 +169,44 @@ public class GameOne {
      * @param block the block to fall down
      */
     public void moveDown(Block block) {
-        if (block.r1.getY() == 684 || block.r2.getY() == 684 ||
-            block.r3.getY() == 684 || block.r4.getY() == 684 ||
-            grid[(int)(block.r1.getX() - 460) / 36][((int)block.r1.getY() / 36) + 1] == 1 ||
-            grid[(int)(block.r2.getX() - 460) / 36][((int)block.r2.getY() / 36) + 1] == 1 ||
-            grid[(int)(block.r3.getX() - 460) / 36][((int)block.r3.getY() / 36) + 1] == 1 ||
-            grid[(int)(block.r4.getX() - 460) / 36][((int)block.r4.getY() / 36) + 1] == 1) {
-            //if you are here, the block has reached the bottom. Now, the grid must change
+        try {
+            if (block.r1.getY() == 684 || block.r2.getY() == 684 ||
+                block.r3.getY() == 684 || block.r4.getY() == 684 ||
+                grid[(int)(block.r1.getX() - 460) / 36][((int)block.r1.getY() / 36) + 1] == 1 ||
+                grid[(int)(block.r2.getX() - 460) / 36][((int)block.r2.getY() / 36) + 1] == 1 ||
+                grid[(int)(block.r3.getX() - 460) / 36][((int)block.r3.getY() / 36) + 1] == 1 ||
+                grid[(int)(block.r4.getX() - 460) / 36][((int)block.r4.getY() / 36) + 1] == 1) {
+                //if you are here, the block has reached the bottom. Now, the grid must change
+    
+                //Fill the spot in the double array, block hit a solid
+                grid[(int)(block.r1.getX() - 460) / 36][(int)block.r1.getY() / 36] = 1;
+                grid[(int)(block.r2.getX() - 460) / 36][(int)block.r2.getY() / 36] = 1;
+                grid[(int)(block.r3.getX() - 460) / 36][(int)block.r3.getY() / 36] = 1;
+                grid[(int)(block.r4.getX() - 460) / 36][(int)block.r4.getY() / 36] = 1;
 
-            //Fill the spot in the double array, block hit a solid
-            grid[(int)(block.r1.getX() - 460) / 36][(int)block.r1.getY() / 36] = 1;
-            grid[(int)(block.r2.getX() - 460) / 36][(int)block.r2.getY() / 36] = 1;
-            grid[(int)(block.r3.getX() - 460) / 36][(int)block.r3.getY() / 36] = 1;
-            grid[(int)(block.r4.getX() - 460) / 36][(int)block.r4.getY() / 36] = 1;
+                Block temp = nextBlock;
+                nextBlock = makeBlock();
+                mainBlock = temp;
 
-            Block temp = nextBlock;
-            nextBlock = makeBlock();
-            mainBlock = temp;
+                group.getChildren().addAll(temp.r1, temp.r2, temp.r3, temp.r4);
+                moveOnKeyPressed(temp);
+            } //if
 
-            group.getChildren().addAll(temp.r1, temp.r2, temp.r3, temp.r4);
-            moveOnKeyPressed(temp);
-        } //if
-
-        if (block.r1.getY() + 36 < 720 && block.r2.getY() + 36 < 720 &&
-            block.r3.getY() + 36 < 720 && block.r4.getY() + 36 < 720 &&
-            grid[(int)(block.r1.getX() - 460) / 36][((int)block.r1.getY() / 36) + 1] == 0 &&
-            grid[(int)(block.r2.getX() - 460) / 36][((int)block.r2.getY() / 36) + 1] == 0 &&
-            grid[(int)(block.r3.getX() - 460) / 36][((int)block.r3.getY() / 36) + 1] == 0 &&
-            grid[(int)(block.r4.getX() - 460) / 36][((int)block.r4.getY() / 36) + 1] == 0)  {
-            //checking if the spot below is free for taking
-            block.r1.setY(block.r1.getY() + 36);
-            block.r2.setY(block.r2.getY() + 36);
-            block.r3.setY(block.r3.getY() + 36);
-            block.r4.setY(block.r4.getY() + 36);
-
-        } //if
-
-
+            if (block.r1.getY() + 36 < 720 && block.r2.getY() + 36 < 720 &&
+                block.r3.getY() + 36 < 720 && block.r4.getY() + 36 < 720 &&
+                grid[(int)(block.r1.getX() - 460) / 36][((int)block.r1.getY() / 36) + 1] == 0 &&
+                grid[(int)(block.r2.getX() - 460) / 36][((int)block.r2.getY() / 36) + 1] == 0 &&
+                grid[(int)(block.r3.getX() - 460) / 36][((int)block.r3.getY() / 36) + 1] == 0 &&
+                grid[(int)(block.r4.getX() - 460) / 36][((int)block.r4.getY() / 36) + 1] == 0)  {
+                //checking if the spot below is free for taking
+                block.r1.setY(block.r1.getY() + 36);
+                block.r2.setY(block.r2.getY() + 36);
+                block.r3.setY(block.r3.getY() + 36);
+                block.r4.setY(block.r4.getY() + 36);
+            } //if
+        } catch (ArrayIndexOutOfBoundsException e) {
+            return;
+        } //catch
     }  //movDown
 
     /**
