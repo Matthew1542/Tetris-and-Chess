@@ -92,17 +92,17 @@ public class GameOne extends Group {
     public void moveDown(Block block) {
 	if (block.r1.getY() == 684 || block.r2.getY() == 684 ||
 	    block.r3.getY() == 684 || block.r4.getY() == 684 ||
-	    grid[(int)block.r1.getX() / 36][((int)block.r1.getY() / 36) + 1] == 1 ||
-	    grid[(int)block.r2.getX() / 36][((int)block.r2.getY() / 36) + 1] == 1 ||
-	    grid[(int)block.r3.getX() / 36][((int)block.r3.getY() / 36) + 1] == 1 ||
-	    grid[(int)block.r4.getX() / 36][((int)block.r4.getY() / 36) + 1] == 1) { 
+	    grid[(int)(block.r1.getX() - 460) / 36][((int)block.r1.getY() / 36) + 1] == 1 ||
+	    grid[(int)(block.r2.getX() - 460) / 36][((int)block.r2.getY() / 36) + 1] == 1 ||
+	    grid[(int)(block.r3.getX() - 460) / 36][((int)block.r3.getY() / 36) + 1] == 1 ||
+	    grid[(int)(block.r4.getX() - 460) / 36][((int)block.r4.getY() / 36) + 1] == 1) { 
 	    //if you are here, the block has reached the bottom. Now, the grid must change
 
 	    //Fill the spot in the double array, block hit a solid
-	    grid[(int)block.r1.getX() / 36][(int)block.r1.getY() / 36] = 1;
-	    grid[(int)block.r2.getX() / 36][(int)block.r2.getY() / 36] = 1;
-	    grid[(int)block.r3.getX() / 36][(int)block.r3.getY() / 36] = 1;
-	    grid[(int)block.r4.getX() / 36][(int)block.r4.getY() / 36] = 1;
+	    grid[(int)(block.r1.getX() - 460) / 36][(int)block.r1.getY() / 36] = 1;
+	    grid[(int)(block.r2.getX() - 460) / 36][(int)block.r2.getY() / 36] = 1;
+	    grid[(int)(block.r3.getX() - 460) / 36][(int)block.r3.getY() / 36] = 1;
+	    grid[(int)(block.r4.getX() - 460) / 36][(int)block.r4.getY() / 36] = 1;
 
 	    Block temp = nextBlock;
 	    nextBlock = makeBlock();
@@ -114,15 +114,15 @@ public class GameOne extends Group {
 
 	if (block.r1.getY() + 36 < 720 && block.r2.getY() + 36 < 720 &&
 	    block.r3.getY() + 36 < 720 && block.r4.getY() + 36 < 720 &&
-	    grid[(int)block.r1.getX() / 36][((int)block.r1.getY() / 36) + 1] == 0 &&
-	    grid[(int)block.r2.getX() / 36][((int)block.r2.getY() / 36) + 1] == 0 &&
-	    grid[(int)block.r3.getX() / 36][((int)block.r3.getY() / 36) + 1] == 0 &&
-	    grid[(int)block.r4.getX() / 36][((int)block.r4.getY() / 36) + 1] == 0)  {
+	    grid[(int)(block.r1.getX() - 460) / 36][((int)block.r1.getY() / 36) + 1] == 0 &&
+	    grid[(int)(block.r2.getX() - 460) / 36][((int)block.r2.getY() / 36) + 1] == 0 &&
+	    grid[(int)(block.r3.getX() - 460) / 36][((int)block.r3.getY() / 36) + 1] == 0 &&
+	    grid[(int)(block.r4.getX() - 460) / 36][((int)block.r4.getY() / 36) + 1] == 0)  {
 	    //checking if the spot below is free for taking
 	    block.r1.setY(block.r1.getY() + 36);
-	    block.r2.setY(block.r1.getY() + 36);
-	    block.r3.setY(block.r1.getY() + 36);
-	    block.r4.setY(block.r1.getY() + 36);
+	    block.r2.setY(block.r2.getY() + 36);
+	    block.r3.setY(block.r3.getY() + 36);
+	    block.r4.setY(block.r4.getY() + 36);
 
 	} //if
 
@@ -135,7 +135,7 @@ public class GameOne extends Group {
      * @return
      */
     public Block makeBlock() {
-        int color = (int) (Math.random() * 6);
+        int color = (int) (Math.random() * 7);
         String type = "temp";
         Rectangle r1 = new Rectangle(size, size);
         Rectangle r2 = new Rectangle(size, size);
