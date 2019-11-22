@@ -183,17 +183,20 @@ public class GameOne {
                 }
             }
             if (lineCount == 10) {
-                linesToRemove.add(i + linesToRemove.size());     
+                linesToRemove.add(i);     
             }
             lineCount = 0;
         }
-        while (linesToRemove.size() > 0) {
         
-            for (Node rects: group.getChildren()) { //accessing the children of group
+        for (Node rects: group.getChildren()) { //accessing the children of group
                 if (rects instanceof Rectangle) { 
                     rectangles.add((Rectangle)rects); //if the child is a rectangle then add it to arraylist rectangles.
                 }
             }
+              
+        while (linesToRemove.size() > 0) {
+        
+            
             
             for (int i = 0; i < rectangles.size(); i++) {        
                 if (rectangles.get(i).getY() == linesToRemove.get(0) * 36) {
@@ -214,6 +217,22 @@ public class GameOne {
             
             linesToRemove.remove(0);
             rectangles.clear();
+            rectanglesMove.clear();
+            
+            for (Node rects: group.getChildren()) { //accessing the children of group
+                if (rects instanceof Rectangle) { 
+                    rectangles.add((Rectangle)rects); //if the child is a rectangle then add it to arraylist rectangles.
+                }
+            }
+            
+            for (int i = 0; i < rectangles.size(); i++) {
+                try {
+                    grid[(int)((rectanglesMove.get(i).getX() - 460) / 36)][(int)(rectanglesMove.get(i).getY() / 36)] = 1;
+                } catch (IndexOutOfBoundsException e) {
+                    System.out.print("");
+                }
+            } 
+            
             rectanglesMove.clear();
         }
         
