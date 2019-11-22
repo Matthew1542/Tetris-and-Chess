@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.Scene;
+import javafx.scene.Node;
 import javafx.stage.Stage;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -90,12 +91,12 @@ public class GameOne {
         Block temp = nextBlock;
 
         group.getChildren().addAll(temp.r1, temp.r2, temp.r3, temp.r4, scoreText);
-        moveOnKeyPressed(temp);
+        keyPressed(temp);
         mainBlock = temp;
         nextBlock = makeBlock();
 
         EventHandler<ActionEvent> handler = event -> runner();
-        KeyFrame keyFrame = new KeyFrame(Duration.millis(400), handler);
+        KeyFrame keyFrame = new KeyFrame(Duration.millis(600), handler);
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.getKeyFrames().add(keyFrame);
         timeline.play();
@@ -117,7 +118,7 @@ public class GameOne {
      *
      * @param block the block to be moved
      */
-    private void moveOnKeyPressed (Block block) {
+    private void keyPressed (Block block) {
         group.setOnKeyPressed(new EventHandler<KeyEvent>() {
                 public void handle(KeyEvent event) {
                     switch (event.getCode()) {
@@ -130,10 +131,10 @@ public class GameOne {
                     case DOWN:
                         moveDown(block);
                         score++;
-			break;
-		    case UP:
-			rotateBlock(block);
-			break;
+			                  break;
+		                case UP:
+			                  rotateBlock(block);
+			                  break;
                     }
                 }
             });
@@ -167,6 +168,56 @@ public class GameOne {
             scoreText.setText("Score: " + score);
         }
     }
+    
+    private void removeRows() {
+        ArrayList<Integer> linesToRemove = new ArrayList<Integer>();
+        ArrayList<Rectangle> rectangles = new ArrayList<Rectangle>();
+        ArrayList<Rectangle> rectanglesMove = new ArrayList<Rectangle>();
+       
+       
+        int lineCount = 0;
+        for (int i = 0; i < 20; i++) {
+            for (int j = 0; j < 10; j++) {
+                if (grid[j][i] == 1) {
+                    lineCount++;
+                }
+            }
+            if (lineCount == 10) {
+                linesToRemove.add(i + linesToRemove.size());     
+            }
+            lineCount = 0;
+        }
+        while (linesToRemove.size() > 0) {
+        
+            for (Node rects: group.getChildren()) { //accessing the children of group
+                if (rects instanceof Rectangle) { 
+                    rectangles.add((Rectangle)rects); //if the child is a rectangle then add it to arraylist rectangles.
+                }
+            }
+            
+            for (int i = 0; i < rectangles.size(); i++) {        
+                if (rectangles.get(i).getY() == linesToRemove.get(0) * 36) {
+                    grid[(int)((rectangles.get(i).getX() - 460) / 36)][(int)(rectangles.get(i).getY()/36)] = 0;
+                    group.getChildren().remove(rectangles.get(i));
+                } else {
+                    if (rectangles.get(i).getY() < linesToRemove.get(0) * 36) {
+                        rectanglesMove.add(rectangles.get(i));
+                    }
+                }
+            }
+            
+            for (int i = 0; i < rectanglesMove.size(); i++) {      
+                grid[(int)((rectanglesMove.get(i).getX() - 460) / 36)][(int)(rectanglesMove.get(i).getY() / 36)] = 0;
+                grid[(int)((rectanglesMove.get(i).getX() - 460) / 36)][(int)((rectanglesMove.get(i).getY() + 36) / 36)] = 1;
+                rectanglesMove.get(i).setY(rectanglesMove.get(i).getY() + 36);
+            }
+            
+            linesToRemove.remove(0);
+            rectangles.clear();
+            rectanglesMove.clear();
+        }
+        
+    } //removeRows
 
 
     public void rotateBlock(Block block) {
@@ -416,13 +467,17 @@ public class GameOne {
                 grid[(int)(block.r2.getX() - 460) / 36][(int)block.r2.getY() / 36] = 1;
                 grid[(int)(block.r3.getX() - 460) / 36][(int)block.r3.getY() / 36] = 1;
                 grid[(int)(block.r4.getX() - 460) / 36][(int)block.r4.getY() / 36] = 1;
+                
                 score += 40;
+                removeRows();
+                
                 Block temp = nextBlock;
                 nextBlock = makeBlock();
                 mainBlock = temp;
 
                 group.getChildren().addAll(temp.r1, temp.r2, temp.r3, temp.r4);
-                moveOnKeyPressed(temp);
+                
+                keyPressed(temp);
             } //if
 
             if (block.r1.getY() + 36 < 720 && block.r2.getY() + 36 < 720 &&
