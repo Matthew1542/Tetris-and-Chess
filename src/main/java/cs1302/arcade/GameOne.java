@@ -170,17 +170,229 @@ public class GameOne {
 
 
     public void rotateBlock(Block block) {
-
-	
-
-
+        if (block.type.equals("red")) {
+            rotateRed(block);
+        } else if (block.type.equals("blue")) {
+            rotateBlue(block);
+        } else if (block.type.equals("green")) {
+            rotateGreen(block);
+        } else if (block.type.equals("cyan")) {
+            rotateCyan(block);
+        } else if (block.type.equals("purple")) {
+            rotatePurple(block);
+        } else if (block.type.equals("orange")) {
+            rotateOrange(block);
+        } 
     } //rotate
+    
+    public void rotateRed(Block block) {
+        if (block.rotation == 1) {
+            if (checkRotate(block.r1, 1, 0) && checkRotate(block.r2, 0, 1) &&
+                checkRotate(block.r3, -1, 0) && checkRotate(block.r4, -2, 1)) {
+                block.rotation++;
+                block.r1.setX(block.r1.getX() + 36);
+                block.r2.setY(block.r2.getY() + 36);
+                block.r3.setX(block.r3.getX() - 36);
+                block.r4.setX(block.r4.getX() - 72);
+                block.r4.setY(block.r4.getY() + 36);
+            }
+        } else if (block.rotation == 2) {
+            if (checkRotate(block.r1, -1, 0) && checkRotate(block.r2, 0, -1) &&
+                checkRotate(block.r3, 1, 0) && checkRotate(block.r4, 2, -1)) {
+                block.rotation = 1;
+                block.r1.setX(block.r1.getX() - 36);
+                block.r2.setY(block.r2.getY() - 36);
+                block.r3.setX(block.r3.getX() + 36);
+                block.r4.setX(block.r4.getX() + 72);
+                block.r4.setY(block.r4.getY() - 36);
+            }
+        }
+    }
+    
+    public void rotateBlue(Block block) {
+        if (block.rotation == 1) {
+            if (checkRotate(block.r1, 2, 0) && checkRotate(block.r2, 1, -1) &&
+                checkRotate(block.r3, 0, 0) && checkRotate(block.r4, -1, 1)) {
+                block.rotation++;
+                block.r1.setX(block.r1.getX() + 72);
+                block.r2.setX(block.r2.getX() + 36);
+                block.r2.setY(block.r2.getY() - 36);
+                block.r4.setX(block.r4.getX() - 36);
+                block.r4.setY(block.r4.getY() + 36);
+            }          
+        } else if (block.rotation == 2) {
+            if (checkRotate(block.r1, 0, 2) && checkRotate(block.r2, -1, 1) &&
+                checkRotate(block.r3, 0, 0) && checkRotate(block.r4, 1, -1)) {
+                block.rotation++;
+                block.r1.setY(block.r1.getY() + 72);
+                block.r2.setX(block.r2.getX() - 36);
+                block.r2.setY(block.r2.getY() + 36);
+                block.r4.setX(block.r4.getX() + 36);
+                block.r4.setY(block.r4.getY() - 36);
+            }  
+        } else if (block.rotation == 3) {
+            if (checkRotate(block.r1, -2, 0) && checkRotate(block.r2, 1, 1) &&
+                checkRotate(block.r3, 0, 0) && checkRotate(block.r4, -1, -1)) {
+                block.rotation++;
+                block.r1.setX(block.r1.getX() - 72);
+                block.r2.setX(block.r2.getX() + 36);
+                block.r2.setY(block.r2.getY() + 36);
+                block.r4.setX(block.r4.getX() - 36);
+                block.r4.setY(block.r4.getY() - 36);
+            }   
+        } else if (block.rotation == 4) {
+            if (checkRotate(block.r1, 0, -2) && checkRotate(block.r2, -1, -1) &&
+                checkRotate(block.r3, 0, 0) && checkRotate(block.r4, 1, 1)) {
+                block.rotation = 1;
+                block.r1.setY(block.r1.getY() - 72);
+                block.r2.setX(block.r2.getX() - 36);
+                block.r2.setY(block.r2.getY() - 36);
+                block.r4.setX(block.r4.getX() + 36);
+                block.r4.setY(block.r4.getY() + 36);
+            } 
+        }
+    }
+    
+    public void rotateGreen(Block block) {
+        if (block.rotation == 1) {
+            if (checkRotate(block.r1, 1, -1) && checkRotate(block.r2, 0, 0) &&
+                checkRotate(block.r3, 1, 1) && checkRotate(block.r4, 0, 2)) {
+                block.rotation++;
+                block.r1.setX(block.r1.getX() + 36);
+                block.r1.setY(block.r1.getY() - 36);
+                block.r3.setX(block.r3.getX() + 36);
+                block.r3.setY(block.r3.getY() + 36);
+                block.r4.setY(block.r4.getY() + 72);
+            }
+        } else if (block.rotation == 2) {
+            if (checkRotate(block.r1, -1, 1) && checkRotate(block.r2, 0, 0) &&
+                checkRotate(block.r3, -1, -1) && checkRotate(block.r4, 0, -2)) {
+                block.rotation = 1;
+                block.r1.setX(block.r1.getX() - 36);
+                block.r1.setY(block.r1.getY() + 36);
+                block.r3.setX(block.r3.getX() - 36);
+                block.r3.setY(block.r3.getY() - 36);
+                block.r4.setY(block.r4.getY() - 72);
+            }
+        }
+    }
+    
+    public void rotateCyan(Block block) {
+        if (block.rotation == 1) {
+            if (checkRotate(block.r1, 2, -2) && checkRotate(block.r2, 1, -1) &&
+                checkRotate(block.r3, 0, 0) && checkRotate(block.r4, -1, 1)) {
+                block.rotation++;
+                block.r1.setX(block.r1.getX() + 72);
+                block.r1.setY(block.r1.getY() - 72);
+                block.r2.setX(block.r2.getX() + 36);
+                block.r2.setY(block.r2.getY() - 36);
+                block.r4.setX(block.r4.getX() - 36);
+                block.r4.setY(block.r4.getY() + 36);
+            }
+        } else if (block.rotation == 2) {
+            if (checkRotate(block.r1, -2, 2) && checkRotate(block.r2, -1, 1) &&
+                checkRotate(block.r3, 0, 0) && checkRotate(block.r4, 1, -1)) {
+                block.rotation = 1;
+                block.r1.setX(block.r1.getX() - 72);
+                block.r1.setY(block.r1.getY() + 72);
+                block.r2.setX(block.r2.getX() - 36);
+                block.r2.setY(block.r2.getY() + 36);
+                block.r4.setX(block.r4.getX() + 36);
+                block.r4.setY(block.r4.getY() - 36);
+            }
+        } 
+    }
+    
+    public void rotatePurple(Block block) {
+        if (block.rotation == 1) {
+            if (checkRotate(block.r1, 1, 1) && checkRotate(block.r2, 0, 0) &&
+                checkRotate(block.r3, 0, 0) && checkRotate(block.r4, 0, 0)) {
+                block.rotation++;
+                block.r1.setX(block.r1.getX() + 36);
+                block.r1.setY(block.r1.getY() + 36);
+            }
+            
+        } else if (block.rotation == 2) {
+            if (checkRotate(block.r1, 0, 0) && checkRotate(block.r2, -1, 1) &&
+                checkRotate(block.r3, 0, 0) && checkRotate(block.r4, 0, 0)) {
+                block.rotation++;
+                block.r2.setX(block.r2.getX() - 36);
+                block.r2.setY(block.r2.getY() + 36);
+            }
+            
+        } else if (block.rotation == 3) {
+            if (checkRotate(block.r1, 0, 0) && checkRotate(block.r2, 0, 0) &&
+                checkRotate(block.r3, 0, 0) && checkRotate(block.r4, -1, -1)) {
+                block.rotation++;
+                block.r4.setX(block.r4.getX() - 36);
+                block.r4.setY(block.r4.getY() - 36);
+            }
+            
+        } else if (block.rotation == 4) {
+            if (checkRotate(block.r1, -1, -1) && checkRotate(block.r2, 1, -1) &&
+                checkRotate(block.r3, 0, 0) && checkRotate(block.r4, 1, 1)) {
+                block.rotation = 1;
+                block.r1.setX(block.r1.getX() - 36);
+                block.r1.setY(block.r1.getY() - 36);
+                block.r2.setX(block.r2.getX() + 36);
+                block.r2.setY(block.r2.getY() - 36);
+                block.r4.setX(block.r4.getX() + 36);
+                block.r4.setY(block.r4.getY() + 36);
+            }
+        }
+    }
+    
+    public void rotateOrange(Block block) {
+        if (block.rotation == 1) {
+            if (checkRotate(block.r1, 1, -1) && checkRotate(block.r2, 0, 0) &&
+                checkRotate(block.r3, 0, 1) && checkRotate(block.r4, -1, 2)) {
+                block.rotation++;
+                block.r1.setX(block.r1.getX() + 36);
+                block.r1.setY(block.r1.getY() - 36);
+                block.r3.setY(block.r3.getY() + 36);
+                block.r4.setX(block.r4.getX() - 36);
+                block.r4.setY(block.r4.getY() + 72);
+            }          
+        } else if (block.rotation == 2) {
+            if (checkRotate(block.r1, -1, 1) && checkRotate(block.r2, 0, 0) &&
+                checkRotate(block.r3, 0, -1) && checkRotate(block.r4, -1, 0)) {
+                block.rotation++;
+                block.r1.setX(block.r1.getX() - 36);
+                block.r1.setY(block.r1.getY() + 36);
+                block.r3.setY(block.r3.getY() - 36);
+                block.r4.setX(block.r4.getX() - 36);
+            }  
+        } else if (block.rotation == 3) {
+            if (checkRotate(block.r1, 1, -1) && checkRotate(block.r2, 0, 0) &&
+                checkRotate(block.r3, -1, 1) && checkRotate(block.r4, 0, -2)) {
+                block.rotation++;
+                block.r1.setX(block.r1.getX() + 36);
+                block.r1.setY(block.r1.getY() - 36);
+                block.r3.setX(block.r3.getX() - 36);
+                block.r3.setY(block.r3.getY() + 36);
+                block.r4.setY(block.r4.getY() - 72);
+            }   
+        } else if (block.rotation == 4) {
+            if (checkRotate(block.r1, -1, 1) && checkRotate(block.r2, 0, 0) &&
+                checkRotate(block.r3, 1, -1) && checkRotate(block.r4, 2, 0)) {
+                block.rotation = 1;
+                block.r1.setX(block.r1.getX() - 36);
+                block.r1.setY(block.r1.getY() + 36);
+                block.r3.setX(block.r3.getX() + 36);
+                block.r3.setY(block.r3.getY() - 36);
+                block.r4.setX(block.r4.getX() + 72);
+            }   
+        }
+    }
 
-    public boolean checkRotate(Block block, int x, int y) {
-
-
-
-
+    public boolean checkRotate(Rectangle r, int x, int y) {
+        if (r.getX() + (x * 36) < 820 && r.getX() + (x * 36) >= 460 &&
+            r.getY() + (y * 36) >= 0 && r.getY() + (y * 36) < 720) {
+            if (grid[(int)((r.getX() - 460) / 36) + x][(int)(r.getY() / 36) + y] == 0) {
+                return true;
+            }
+        }
+        return false;
     } //check
     
     /**

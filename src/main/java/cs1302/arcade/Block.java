@@ -17,7 +17,7 @@ public class Block {
     Rectangle r4;
 
     String type; //type of block
-
+    int rotation = 1;
     ImagePattern png;
 
     /**
