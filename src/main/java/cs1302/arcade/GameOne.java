@@ -130,6 +130,10 @@ public class GameOne {
                     case DOWN:
                         moveDown(block);
                         score++;
+			break;
+		    case UP:
+			rotateBlock(block);
+			break;
                     }
                 }
             });
@@ -163,6 +167,21 @@ public class GameOne {
             scoreText.setText("Score: " + score);
         }
     }
+
+
+    public void rotateBlock(Block block) {
+
+	
+
+
+    } //rotate
+
+    public boolean checkRotate(Block block, int x, int y) {
+
+
+
+
+    } //check
     
     /**
      * The method that causes the block to fall down by its size,
