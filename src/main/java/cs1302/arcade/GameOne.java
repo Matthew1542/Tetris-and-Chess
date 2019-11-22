@@ -65,7 +65,7 @@ public class GameOne {
 
     /**
      * The constructor of the tetris game.
-     *
+     * @param app The parent {@code ArcadeApp} used for switching scenes.
      */
     public GameOne(ArcadeApp app) {
         this.app = app;
@@ -82,11 +82,11 @@ public class GameOne {
         quit.setTranslateX(50);
         quit.setTranslateY(50);
         quit.setOnAction(new EventHandler<ActionEvent>() {
-            @Override public void handle(ActionEvent e) {
-                app.gameState = "MENU";
-                app.updateScene();
-            }
-        });
+                @Override public void handle(ActionEvent e) {
+                    app.gameState = "MENU";
+                    app.updateScene();
+                }
+            });
         group.getChildren().addAll(board, quit);
         Block temp = nextBlock;
 
@@ -104,9 +104,9 @@ public class GameOne {
     } //main/constructor
 
     /**
-     * Getter for the scene. 
+     * Getter for the scene.
      *
-     * @return the scene 
+     * @return the scene
      */
     public Scene getScene() {
         return scene;
@@ -114,7 +114,7 @@ public class GameOne {
 
 
     /**
-     * The method that results in a moving block. 
+     * The method that results in a moving block.
      *
      * @param block the block to be moved
      */
@@ -131,10 +131,10 @@ public class GameOne {
                     case DOWN:
                         moveDown(block);
                         score++;
-			                  break;
-		                case UP:
-			                  rotateBlock(block);
-			                  break;
+                        break;
+                    case UP:
+                        rotateBlock(block);
+                        break;
                     }
                 }
             });
@@ -142,6 +142,10 @@ public class GameOne {
 
     int timer = 0;
     boolean playing = true;
+    
+    /**
+     * Main runner class for the game. 
+     */
     public void runner() {
         if (mainBlock.r1.getY() == 0 || mainBlock.r2.getY() == 0 ||
             mainBlock.r3.getY() == 0 || mainBlock.r4.getY() == 0) {
@@ -149,7 +153,7 @@ public class GameOne {
         } else {
             timer = 0;
         }
-        if (timer == 3) {      
+        if (timer == 3) {
             Text gameOver = new Text("GAME OVER");
             gameOver.setX(600);
             gameOver.setY(360);
@@ -157,24 +161,25 @@ public class GameOne {
             group.getChildren().add(gameOver);
             playing = false;
         }
-        
+
         if (timer == 20) {
             app.gameState = "MENU";
             app.updateScene();
         }
-        
+
         if (playing) {
             moveDown(mainBlock);
             scoreText.setText("Score: " + score);
         }
     }
     
+    /**
+     * This method removes full rows in the tetris game.
+     */ 
     private void removeRows() {
         ArrayList<Integer> linesToRemove = new ArrayList<Integer>();
         ArrayList<Rectangle> rectangles = new ArrayList<Rectangle>();
         ArrayList<Rectangle> rectanglesMove = new ArrayList<Rectangle>();
-       
-       
         int lineCount = 0;
         for (int i = 0; i < 20; i++) {
             for (int j = 0; j < 10; j++) {
@@ -183,24 +188,21 @@ public class GameOne {
                 }
             }
             if (lineCount == 10) {
-                linesToRemove.add(i);     
+                linesToRemove.add(i);
             }
             lineCount = 0;
         }
-        
         for (Node rects: group.getChildren()) { //accessing the children of group
-                if (rects instanceof Rectangle) { 
-                    rectangles.add((Rectangle)rects); //if the child is a rectangle then add it to arraylist rectangles.
-                }
+            if (rects instanceof Rectangle) {
+                rectangles.add((Rectangle)rects);
             }
-              
+        }
         while (linesToRemove.size() > 0) {
-        
-            
-            
-            for (int i = 0; i < rectangles.size(); i++) {        
+            score += 100;
+            for (int i = 0; i < rectangles.size(); i++) {
                 if (rectangles.get(i).getY() == linesToRemove.get(0) * 36) {
-                    grid[(int)((rectangles.get(i).getX() - 460) / 36)][(int)(rectangles.get(i).getY()/36)] = 0;
+                    Rectangle r = rectangles.get(i);
+                    grid[(int)((r.getX() - 460) / 36)][(int)(r.getY() / 36)] = 0;
                     group.getChildren().remove(rectangles.get(i));
                 } else {
                     if (rectangles.get(i).getY() < linesToRemove.get(0) * 36) {
@@ -208,37 +210,37 @@ public class GameOne {
                     }
                 }
             }
-            
-            for (int i = 0; i < rectanglesMove.size(); i++) {      
-                grid[(int)((rectanglesMove.get(i).getX() - 460) / 36)][(int)(rectanglesMove.get(i).getY() / 36)] = 0;
-                grid[(int)((rectanglesMove.get(i).getX() - 460) / 36)][(int)((rectanglesMove.get(i).getY() + 36) / 36)] = 1;
+            for (int i = 0; i < rectanglesMove.size(); i++) {
+                Rectangle r = rectanglesMove.get(i);
+                grid[(int)((r.getX() - 460) / 36)][(int)(r.getY() / 36)] = 0;
+                grid[(int)((r.getX() - 460) / 36)][(int)((r.getY() + 36) / 36)] = 1;
                 rectanglesMove.get(i).setY(rectanglesMove.get(i).getY() + 36);
             }
-            
             linesToRemove.remove(0);
             rectangles.clear();
             rectanglesMove.clear();
-            
             for (Node rects: group.getChildren()) { //accessing the children of group
-                if (rects instanceof Rectangle) { 
-                    rectangles.add((Rectangle)rects); //if the child is a rectangle then add it to arraylist rectangles.
+                if (rects instanceof Rectangle) {
+                    rectangles.add((Rectangle)rects);
                 }
             }
-            
             for (int i = 0; i < rectangles.size(); i++) {
                 try {
-                    grid[(int)((rectanglesMove.get(i).getX() - 460) / 36)][(int)(rectanglesMove.get(i).getY() / 36)] = 1;
+                    Rectangle r = rectangles.get(i);
+                    grid[(int)((r.getX() - 460) / 36)][(int)(r.getY() / 36)] = 1;
                 } catch (IndexOutOfBoundsException e) {
                     System.out.print("");
                 }
-            } 
-            
+            }
             rectanglesMove.clear();
         }
-        
     } //removeRows
 
-
+    /**
+     * Checks to see which type of block is being rotated and calls the 
+     * corresponding method.
+     * @param block The block being rotated.
+     */
     public void rotateBlock(Block block) {
         if (block.type.equals("red")) {
             rotateRed(block);
@@ -252,9 +254,13 @@ public class GameOne {
             rotatePurple(block);
         } else if (block.type.equals("orange")) {
             rotateOrange(block);
-        } 
+        }
     } //rotate
-    
+
+    /**
+     * Rotates the red block.
+     * @param block The block being rotated.
+     */
     public void rotateRed(Block block) {
         if (block.rotation == 1) {
             if (checkRotate(block.r1, 1, 0) && checkRotate(block.r2, 0, 1) &&
@@ -279,6 +285,10 @@ public class GameOne {
         }
     }
     
+    /**
+     * Rotates the blue block.
+     * @param block The block being rotated.
+     */
     public void rotateBlue(Block block) {
         if (block.rotation == 1) {
             if (checkRotate(block.r1, 2, 0) && checkRotate(block.r2, 1, -1) &&
@@ -289,7 +299,7 @@ public class GameOne {
                 block.r2.setY(block.r2.getY() - 36);
                 block.r4.setX(block.r4.getX() - 36);
                 block.r4.setY(block.r4.getY() + 36);
-            }          
+            }
         } else if (block.rotation == 2) {
             if (checkRotate(block.r1, 0, 2) && checkRotate(block.r2, -1, 1) &&
                 checkRotate(block.r3, 0, 0) && checkRotate(block.r4, 1, -1)) {
@@ -299,7 +309,7 @@ public class GameOne {
                 block.r2.setY(block.r2.getY() + 36);
                 block.r4.setX(block.r4.getX() + 36);
                 block.r4.setY(block.r4.getY() - 36);
-            }  
+            }
         } else if (block.rotation == 3) {
             if (checkRotate(block.r1, -2, 0) && checkRotate(block.r2, 1, 1) &&
                 checkRotate(block.r3, 0, 0) && checkRotate(block.r4, -1, -1)) {
@@ -309,7 +319,7 @@ public class GameOne {
                 block.r2.setY(block.r2.getY() + 36);
                 block.r4.setX(block.r4.getX() - 36);
                 block.r4.setY(block.r4.getY() - 36);
-            }   
+            }
         } else if (block.rotation == 4) {
             if (checkRotate(block.r1, 0, -2) && checkRotate(block.r2, -1, -1) &&
                 checkRotate(block.r3, 0, 0) && checkRotate(block.r4, 1, 1)) {
@@ -319,10 +329,14 @@ public class GameOne {
                 block.r2.setY(block.r2.getY() - 36);
                 block.r4.setX(block.r4.getX() + 36);
                 block.r4.setY(block.r4.getY() + 36);
-            } 
+            }
         }
     }
     
+    /**
+     * Rotates the green block.
+     * @param block The block being rotated.
+     */
     public void rotateGreen(Block block) {
         if (block.rotation == 1) {
             if (checkRotate(block.r1, 1, -1) && checkRotate(block.r2, 0, 0) &&
@@ -347,6 +361,10 @@ public class GameOne {
         }
     }
     
+    /**
+     * Rotates the cyan block.
+     * @param block The block being rotated.
+     */
     public void rotateCyan(Block block) {
         if (block.rotation == 1) {
             if (checkRotate(block.r1, 2, -2) && checkRotate(block.r2, 1, -1) &&
@@ -370,9 +388,13 @@ public class GameOne {
                 block.r4.setX(block.r4.getX() + 36);
                 block.r4.setY(block.r4.getY() - 36);
             }
-        } 
+        }
     }
-    
+  
+    /**
+     * Rotates the purple block.
+     * @param block The block being rotated.
+     */
     public void rotatePurple(Block block) {
         if (block.rotation == 1) {
             if (checkRotate(block.r1, 1, 1) && checkRotate(block.r2, 0, 0) &&
@@ -381,7 +403,7 @@ public class GameOne {
                 block.r1.setX(block.r1.getX() + 36);
                 block.r1.setY(block.r1.getY() + 36);
             }
-            
+
         } else if (block.rotation == 2) {
             if (checkRotate(block.r1, 0, 0) && checkRotate(block.r2, -1, 1) &&
                 checkRotate(block.r3, 0, 0) && checkRotate(block.r4, 0, 0)) {
@@ -389,7 +411,7 @@ public class GameOne {
                 block.r2.setX(block.r2.getX() - 36);
                 block.r2.setY(block.r2.getY() + 36);
             }
-            
+
         } else if (block.rotation == 3) {
             if (checkRotate(block.r1, 0, 0) && checkRotate(block.r2, 0, 0) &&
                 checkRotate(block.r3, 0, 0) && checkRotate(block.r4, -1, -1)) {
@@ -397,7 +419,7 @@ public class GameOne {
                 block.r4.setX(block.r4.getX() - 36);
                 block.r4.setY(block.r4.getY() - 36);
             }
-            
+
         } else if (block.rotation == 4) {
             if (checkRotate(block.r1, -1, -1) && checkRotate(block.r2, 1, -1) &&
                 checkRotate(block.r3, 0, 0) && checkRotate(block.r4, 1, 1)) {
@@ -412,6 +434,10 @@ public class GameOne {
         }
     }
     
+    /**
+     * Rotates the orange block.
+     * @param block The block being rotated.
+     */
     public void rotateOrange(Block block) {
         if (block.rotation == 1) {
             if (checkRotate(block.r1, 1, -1) && checkRotate(block.r2, 0, 0) &&
@@ -422,7 +448,7 @@ public class GameOne {
                 block.r3.setY(block.r3.getY() + 36);
                 block.r4.setX(block.r4.getX() - 36);
                 block.r4.setY(block.r4.getY() + 72);
-            }          
+            }
         } else if (block.rotation == 2) {
             if (checkRotate(block.r1, -1, 1) && checkRotate(block.r2, 0, 0) &&
                 checkRotate(block.r3, 0, -1) && checkRotate(block.r4, -1, 0)) {
@@ -431,7 +457,7 @@ public class GameOne {
                 block.r1.setY(block.r1.getY() + 36);
                 block.r3.setY(block.r3.getY() - 36);
                 block.r4.setX(block.r4.getX() - 36);
-            }  
+            }
         } else if (block.rotation == 3) {
             if (checkRotate(block.r1, 1, -1) && checkRotate(block.r2, 0, 0) &&
                 checkRotate(block.r3, -1, 1) && checkRotate(block.r4, 0, -2)) {
@@ -441,7 +467,7 @@ public class GameOne {
                 block.r3.setX(block.r3.getX() - 36);
                 block.r3.setY(block.r3.getY() + 36);
                 block.r4.setY(block.r4.getY() - 72);
-            }   
+            }
         } else if (block.rotation == 4) {
             if (checkRotate(block.r1, -1, 1) && checkRotate(block.r2, 0, 0) &&
                 checkRotate(block.r3, 1, -1) && checkRotate(block.r4, 2, 0)) {
@@ -451,10 +477,17 @@ public class GameOne {
                 block.r3.setX(block.r3.getX() + 36);
                 block.r3.setY(block.r3.getY() - 36);
                 block.r4.setX(block.r4.getX() + 72);
-            }   
+            }
         }
     }
 
+    /**
+     * Checks to see if a rotation is "legal".
+     * @param r The rectangle being checked.
+     * @param x The x direction it is being moved.
+     * @param y The y direction it is being moved.
+     * @return If it is a "legal" rotation/move.
+     */
     public boolean checkRotate(Rectangle r, int x, int y) {
         if (r.getX() + (x * 36) < 820 && r.getX() + (x * 36) >= 460 &&
             r.getY() + (y * 36) >= 0 && r.getY() + (y * 36) < 720) {
@@ -464,7 +497,7 @@ public class GameOne {
         }
         return false;
     } //check
-    
+
     /**
      * The method that causes the block to fall down by its size,
      * every 10 seconds.
@@ -480,22 +513,22 @@ public class GameOne {
                 grid[(int)(block.r3.getX() - 460) / 36][((int)block.r3.getY() / 36) + 1] == 1 ||
                 grid[(int)(block.r4.getX() - 460) / 36][((int)block.r4.getY() / 36) + 1] == 1) {
                 //if you are here, the block has reached the bottom. Now, the grid must change
-    
+
                 //Fill the spot in the double array, block hit a solid
                 grid[(int)(block.r1.getX() - 460) / 36][(int)block.r1.getY() / 36] = 1;
                 grid[(int)(block.r2.getX() - 460) / 36][(int)block.r2.getY() / 36] = 1;
                 grid[(int)(block.r3.getX() - 460) / 36][(int)block.r3.getY() / 36] = 1;
                 grid[(int)(block.r4.getX() - 460) / 36][(int)block.r4.getY() / 36] = 1;
-                
+
                 score += 40;
                 removeRows();
-                
+
                 Block temp = nextBlock;
                 nextBlock = makeBlock();
                 mainBlock = temp;
 
                 group.getChildren().addAll(temp.r1, temp.r2, temp.r3, temp.r4);
-                
+
                 keyPressed(temp);
             } //if
 
@@ -544,7 +577,7 @@ public class GameOne {
      * Moves block to the right.
      *
      * @param block the moving item
-     */ 
+     */
     public void moveRight(Block block) {
         try {
             if (block.r1.getX() - 460 + size < 360 && block.r2.getX() - 460 + size < 360 &&
@@ -572,7 +605,7 @@ public class GameOne {
     public Block makeBlock() {
         int color = (int) (Math.random() * 7);
         String type = "temp";
-        Rectangle r1 = new Rectangle(size, size), r2 = new Rectangle(size, size);       
+        Rectangle r1 = new Rectangle(size, size), r2 = new Rectangle(size, size);
         Rectangle r3 = new Rectangle(size, size);
         Rectangle r4 = new Rectangle(size, size);
         if (color == 0) { //the color cyan block will be made
