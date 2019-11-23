@@ -99,6 +99,7 @@ public class GameOne {
                 @Override public void handle(ActionEvent e) {
                     app.gameState = "MENU";
                     app.updateScene();
+                    timeline.stop();
                 }
             });
         group.getChildren().addAll(board, quit);
@@ -188,6 +189,7 @@ public class GameOne {
         if (timer == 20) {
             app.gameState = "MENU";
             app.updateScene();
+            timeline.stop();
         }
 
         if (playing) {
