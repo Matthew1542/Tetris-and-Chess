@@ -32,6 +32,8 @@ import javafx.animation.Timeline;
 import javafx.animation.KeyFrame;
 import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 
 /**
  * This class is a javaFX made game of tetris.
@@ -55,12 +57,16 @@ public class GameOne {
     ImageView board = new ImageView(new Image("file:resources/board.png"));
 
     int score = 0; //the score of the game
+    int level = 0;
     Block mainBlock;
     Block nextBlock = makeBlock();
-    Timeline timeline = new Timeline(); //create new timeline
+    //create new timeline
     Group group = new Group();
     Scene scene;
     Text scoreText;
+    Text levelText;
+    KeyFrame keyFrame;
+    Timeline timeline;
     ArcadeApp app;
 
     /**
@@ -75,9 +81,17 @@ public class GameOne {
                 grid[i][x] = 0; //fill grid with 0's
             } //for
         } //for
+        
         scoreText = new Text("Score: " + score);
-        scoreText.setX(935);
-        scoreText.setY(100);
+        scoreText.setX(915);
+        scoreText.setY(150);
+        scoreText.setFont(Font.font("Verdana", FontWeight.BOLD, 40));
+        
+        levelText = new Text("Level: " + level);
+        levelText.setX(915);
+        levelText.setY(250);
+        levelText.setFont(Font.font("Verdana", FontWeight.BOLD, 40));
+        
         Button quit = new Button("Quit");
         quit.setTranslateX(50);
         quit.setTranslateY(50);
@@ -89,17 +103,12 @@ public class GameOne {
             });
         group.getChildren().addAll(board, quit);
         Block temp = nextBlock;
-
-        group.getChildren().addAll(temp.r1, temp.r2, temp.r3, temp.r4, scoreText);
+        timeline = new Timeline();
+        group.getChildren().addAll(temp.r1, temp.r2, temp.r3, temp.r4, scoreText, levelText);
         keyPressed(temp);
         mainBlock = temp;
         nextBlock = makeBlock();
-
-        EventHandler<ActionEvent> handler = event -> runner();
-        KeyFrame keyFrame = new KeyFrame(Duration.millis(600), handler);
-        timeline.setCycleCount(Timeline.INDEFINITE);
-        timeline.getKeyFrames().add(keyFrame);
-        timeline.play();
+        makeTimeline(1000);
         group.requestFocus();
     } //main/constructor
 
@@ -111,7 +120,20 @@ public class GameOne {
     public Scene getScene() {
         return scene;
     }
-
+  
+    /**
+     * Creates a timeline to run the game loop with a variable delay.
+     * @param milis The miliseconds between each loop execution.
+     */
+    private void makeTimeline(int milis) {        
+        EventHandler<ActionEvent> handler = event -> runner();
+        keyFrame = new KeyFrame(Duration.millis(milis), handler);   
+        timeline.stop(); 
+        timeline = new Timeline();
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.getKeyFrames().add(keyFrame);
+        timeline.play();
+    }
 
     /**
      * The method that results in a moving block.
@@ -155,9 +177,10 @@ public class GameOne {
         }
         if (timer == 3) {
             Text gameOver = new Text("GAME OVER");
-            gameOver.setX(600);
+            gameOver.setX(180);
             gameOver.setY(360);
             gameOver.setFill(Color.RED);
+            gameOver.setFont(Font.font("Verdana", FontWeight.BOLD, 150));
             group.getChildren().add(gameOver);
             playing = false;
         }
@@ -170,7 +193,24 @@ public class GameOne {
         if (playing) {
             moveDown(mainBlock);
             scoreText.setText("Score: " + score);
+            levelText.setText("Level: " + level);
         }
+        if (score > 1000 && level == 0) {
+            level++;
+            makeTimeline(1000 - 100 * level);
+        } else if (score > 2000 && level == 1) {
+            level++;
+            makeTimeline(1000 - 100 * level);
+        } else if (score > 3000 && level == 2) {
+            level++;
+            makeTimeline(1000 - 100 * level);
+        } else if (score > 4000 && level == 3) {
+            level++;
+            makeTimeline(1000 - 100 * level);
+        } else if (score > 5000 && level == 4) {
+            level++;
+            makeTimeline(1000 - 100 * level);
+        } 
     }
     
     /**
