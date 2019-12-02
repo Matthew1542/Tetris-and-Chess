@@ -284,19 +284,19 @@ public class GameOne {
      * @param block The block being rotated.
      */
     public void rotateBlock(Block block) {
-        if (block.type.equals("red")) {
+        if (block.type.equals("red")) { //red block
             rotateRed(block);
-        } else if (block.type.equals("blue")) {
+        } else if (block.type.equals("blue")) { //blue block
             rotateBlue(block);
-        } else if (block.type.equals("green")) {
+        } else if (block.type.equals("green")) { //green block
             rotateGreen(block);
-        } else if (block.type.equals("cyan")) {
+        } else if (block.type.equals("cyan")) { //cyan block
             rotateCyan(block);
-        } else if (block.type.equals("purple")) {
+        } else if (block.type.equals("purple")) { //purple block
             rotatePurple(block);
-        } else if (block.type.equals("orange")) {
+        } else if (block.type.equals("orange")) { //orange block
             rotateOrange(block);
-        }
+        } //if-else
     } //rotate
 
     /**
@@ -304,15 +304,17 @@ public class GameOne {
      * @param block The block being rotated.
      */
     public void rotateRed(Block block) {
+	//only requires 2 rotations in total
         if (block.rotation == 1) {
             if (checkRotate(block.r1, 1, 0) && checkRotate(block.r2, 0, 1) &&
                 checkRotate(block.r3, -1, 0) && checkRotate(block.r4, -2, 1)) {
-                block.rotation++;
-                block.r1.setX(block.r1.getX() + 36);
-                block.r2.setY(block.r2.getY() + 36);
-                block.r3.setX(block.r3.getX() - 36);
-                block.r4.setX(block.r4.getX() - 72);
-                block.r4.setY(block.r4.getY() + 36);
+		//if you are here, red has passed the rotation requirements.
+                block.rotation++; 
+                block.r1.setX(block.r1.getX() + 36); //shift spot of r1 block
+                block.r2.setY(block.r2.getY() + 36); //shift spot of r2 block
+                block.r3.setX(block.r3.getX() - 36); //shift spot of r3 block
+                block.r4.setX(block.r4.getX() - 72); //shift spot of r4 block
+                block.r4.setY(block.r4.getY() + 36); //shift HEIGHT of r4 block
             }
         } else if (block.rotation == 2) {
             if (checkRotate(block.r1, -1, 0) && checkRotate(block.r2, 0, -1) &&
@@ -332,6 +334,7 @@ public class GameOne {
      * @param block The block being rotated.
      */
     public void rotateBlue(Block block) {
+	//Hard one, requires 4 total rotations
         if (block.rotation == 1) {
             if (checkRotate(block.r1, 2, 0) && checkRotate(block.r2, 1, -1) &&
                 checkRotate(block.r3, 0, 0) && checkRotate(block.r4, -1, 1)) {
@@ -533,7 +536,9 @@ public class GameOne {
     public boolean checkRotate(Rectangle r, int x, int y) {
         if (r.getX() + (x * 36) < 820 && r.getX() + (x * 36) >= 460 &&
             r.getY() + (y * 36) >= 0 && r.getY() + (y * 36) < 720) {
+	    //if you are here, the block is not going to rotate into a wall
             if (grid[(int)((r.getX() - 460) / 36) + x][(int)(r.getY() / 36) + y] == 0) {
+		//here, there is no other block that is obstructing, so you can rotate
                 return true;
             }
         }
@@ -554,22 +559,22 @@ public class GameOne {
                 grid[(int)(block.r2.getX() - 460) / 36][((int)block.r2.getY() / 36) + 1] == 1 ||
                 grid[(int)(block.r3.getX() - 460) / 36][((int)block.r3.getY() / 36) + 1] == 1 ||
                 grid[(int)(block.r4.getX() - 460) / 36][((int)block.r4.getY() / 36) + 1] == 1) {
-                //if you are here, the block has reached the bottom. Now, the grid must change
+                //if you are here, the block has passed the criteria for stopping 
 
-                //Fill the spot in the double array, block hit a solid
+                //Fill the spot in the double array, block hit a solid. -> 1 = taken spot
                 grid[(int)(block.r1.getX() - 460) / 36][(int)block.r1.getY() / 36] = 1;
                 grid[(int)(block.r2.getX() - 460) / 36][(int)block.r2.getY() / 36] = 1;
                 grid[(int)(block.r3.getX() - 460) / 36][(int)block.r3.getY() / 36] = 1;
                 grid[(int)(block.r4.getX() - 460) / 36][(int)block.r4.getY() / 36] = 1;
 
-                score += 40;
-                removeRows();
+                score += 40; //move up score by 40
+                removeRows(); //helper method to clear rows 
 
                 Block temp = nextBlock;
                 nextBlock = makeBlock();
                 mainBlock = temp;
 
-                group.getChildren().addAll(temp.r1, temp.r2, temp.r3, temp.r4);
+                group.getChildren().addAll(temp.r1, temp.r2, temp.r3, temp.r4); //add the block
 
                 keyPressed(temp);
             } //if
@@ -635,6 +640,8 @@ public class GameOne {
                 block.r4.setX(block.r4.getX() + 36);
             } //if
         } catch (ArrayIndexOutOfBoundsException e) {
+	    //this happens when the user tries to move when the block is still falling
+	    //They should still be able to move without getting an exception.
             return;
         } //catch
     }
@@ -656,21 +663,21 @@ public class GameOne {
             r3.setX(xSize / 2);
             r4.setX(xSize / 2 + size);
             type = "cyan";
-        } else if (color == 1) {
+        } else if (color == 1) { //blue
             r1.setX(xSize / 2 - size);
             r1.setY(0 - size);
             r2.setX(xSize / 2 - size);
             r3.setX(xSize / 2);
             r4.setX(xSize / 2 + size);
             type = "blue";
-        } else if (color == 2) {
+        } else if (color == 2) { //oragne
             r1.setX(xSize / 2 - size);
             r2.setX(xSize / 2);
             r3.setX(xSize / 2 + size);
             r4.setX(xSize / 2 + size);
             r4.setY(0 - size);
             type = "orange";
-        } else if (color == 3) {
+        } else if (color == 3) { //yellow
             r1.setX(xSize / 2 - size);
             r1.setY(0 - size);
             r2.setX(xSize / 2);
