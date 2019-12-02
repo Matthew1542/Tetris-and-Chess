@@ -110,9 +110,9 @@ public class ArcadeApp extends Application {
             stage.setScene(gameOne.getScene());
             stage.setTitle("Tetris");
         } else if (gameState.equals("GAMETWO")) {
-            gameTwo = new GameTwo();
-            stage.setScene(new Scene(gameTwo, 1280, 720));
-            stage.setTitle("Chess");
+            gameTwo = new GameTwo(this);
+            stage.setScene(gameTwo.getScene());
+            
             stage.setTitle("Chess");
         } else { 
             System.out.println("INVALID GAMESTATE");
