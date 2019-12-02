@@ -56,6 +56,7 @@ public class GameTwo {
     Image whiteKing = new Image("file:resources/whiteKing.png"); //king
     Image blackKnight = new Image("file:resources/blackKnight.png"); //knight
     Image whiteKnight = new Image("file:resources/whiteKnight.png"); //knight
+    Image posRoute = new Image("file:resources/pos.png"); //highlights routes
     
 
     int score = 40; //score goes down with each loss of a piece
@@ -64,6 +65,8 @@ public class GameTwo {
     Scene scene;
     Text score1Text;
     Text score2Text;
+
+    Boolean turn = true; //which turn it is
     
     /**
      * The constructor of the chess game.
@@ -118,4 +121,7 @@ public class GameTwo {
     public Scene getScene() {
 	return scene;
     } //getter
+
+
+    
 }
