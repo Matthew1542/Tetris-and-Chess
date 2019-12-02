@@ -26,8 +26,20 @@ import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 
-public class GameTwo extends Group {
+/**
+ * This class is the main class for a javaFX chess game.
+ *
+ */
+public class GameTwo {
 
+    /** double array containing every possible spot for each piece. */
+    public final int[][] = new int[8][8]; //8x8 game board
+
+    /** Image to be used as the game board. */
+
+    int score = 40; //score goes down with each loss of a piece
+    Group group = new Group();
+    
     public GameTwo() {
 
 
