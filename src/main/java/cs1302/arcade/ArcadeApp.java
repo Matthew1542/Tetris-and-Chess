@@ -171,6 +171,7 @@ public class ArcadeApp extends Application {
         stage.setTitle("cs1302-arcade!");
         updateScene();
         stage.sizeToScene();
+        stage.setResizable(false);
         stage.show();
     } // start
 
