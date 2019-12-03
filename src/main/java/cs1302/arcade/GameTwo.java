@@ -35,7 +35,7 @@ import javafx.scene.paint.ImagePattern;
 
 
 /**
- * This class is the main class for a javaFX chess game.
+ * This class is the main class for a javaFX game of chess.
  *
  */
 public class GameTwo {
