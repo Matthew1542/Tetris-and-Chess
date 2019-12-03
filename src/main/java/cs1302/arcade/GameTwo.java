@@ -31,6 +31,7 @@ import javafx.scene.text.FontWeight;
 import java.io.File;
 import java.util.Scanner;
 import java.io.FileNotFoundException;
+import javafx.scene.paint.ImagePattern;
 
 
 /**
@@ -47,22 +48,23 @@ public class GameTwo {
     Image posRoute = new Image("file:resources/pos.png"); //highlights routes
 
 
-    int score = 100; //score goes down with each loss of a piece
     Group group = new Group();
     ArcadeApp app;
     Scene scene;
     Text score1Text;
     Text score2Text;
+    int scoreOne = 100; //score goes down with each loss of a piece
+    int scoreTwo = 100; //score goes down with each loss of a piece
 
     Boolean turn = true; //which turn it is
 
     ArrayList<Piece> pieces = new ArrayList<Piece>();
-    
+
     String[] typeArray = {"bR", "bH", "bB", "bQ", "bK", "bB", "bH", "bR",
-        "bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP",
-        "wP", "wP", "wP", "wP", "wP", "wP", "wP", "wP",
-        "wR", "wH", "wB", "wK", "wQ", "wB", "wH", "wR"};
-    
+                          "bP", "bP", "bP", "bP", "bP", "bP", "bP", "bP",
+                          "wP", "wP", "wP", "wP", "wP", "wP", "wP", "wP",
+                          "wR", "wH", "wB", "wK", "wQ", "wB", "wH", "wR"};
+
     /**
      * The constructor of the chess game.
      *
@@ -75,12 +77,12 @@ public class GameTwo {
         for (int i = 0; i < 8; i++) {
             for (int x = 0; x < 8; x++) {
                 if (i == 0 || i == 1) {
-                    grid[i][x] = 1; //1 = white piece
+                    grid[x][i] = 2; //1 = white piece
                 } else if (i == 6 || i == 7) {
-                    grid[i][x] = 2; //2 = black piece
+                    grid[x][i] = 1; //2 = black piece
                 } else {
                     //if you are here, the spot is empty
-                    grid[i][x] = 0; //empty spot
+                    grid[x][i] = 0; //empty spot
                 } //else
             } //for
         } //for
@@ -90,24 +92,23 @@ public class GameTwo {
                 int y = j * 90 + 360;
                 if (j < 2) {
                     y = j * 90;
-                } 
+                }
                 String type = typeArray[j * 8 + i];
                 Piece p = new Piece(x, y, type);
-                
                 pieces.add(p);
             }
         }
-        
+
         for (int i = 0; i < pieces.size(); i++)  {
             group.getChildren().add(pieces.get(i));
         }
 
-        score1Text = new Text("" + score);
+        score1Text = new Text("" + scoreOne);
         score1Text.setX(1105);
         score1Text.setY(175);
         score1Text.setFont(Font.font("Verdana", FontWeight.BOLD, 40));
 
-        score2Text = new Text("" + score);
+        score2Text = new Text("" + scoreTwo);
         score2Text.setX(115);
         score2Text.setY(175);
         score2Text.setFont(Font.font("Verdana", FontWeight.BOLD, 40));
@@ -122,50 +123,243 @@ public class GameTwo {
                 }
             });
         group.getChildren().addAll(quit, score1Text, score2Text);
-        group.setOnMouseClicked(createMouseHandler()); 
+        group.setOnMouseClicked(createMouseHandler());
 
     } //gameTwo
 
     /**
-     * Getter for the scene
+     * Getter for the scene.
      *
      * @return the scene
      */
     public Scene getScene() {
         return scene;
     } //getter
-    
+
+    ArrayList<int[]> possible = new ArrayList<int[]>();
+    int placeHolder = 0;
+    ArrayList<Rectangle> pos = new ArrayList<Rectangle>();
+
     private EventHandler<? super MouseEvent> createMouseHandler() {
         return event -> {
-            int x = (int)event.getX();
-            int y = (int)event.getY();
-            x = (int)Math.floor((x - 280) / 90);
-            y = (int)Math.floor(y / 90);
-            System.out.println("X: " + x + " Y: " + y);
-            for (int i = 0; i < pieces.size(); i++) {
-                if ((int)Math.floor((pieces.get(i).getX() - 280) / 90) == x &&
-                    (int)Math.floor(pieces.get(i).getY() / 90) == y) {
-                    if (type.equals("wP")) {
-                        moveWhitePawn(pieces.get(i));
-                    } else if (type.equals("bP")) {
-                        moveBlackPawn(pieces.get(i));
-                    } else if (type.contains("R")) {
-                        moveRook(pieces.get(i));
-                    } else if (type.contains("H")) {
-                        moveHorse(pieces.get(i));
-                    } else if (type.contains("B")) {
-                        moveBishop(pieces.get(i));
-                    } else if (type.contains("K")) {
-                        moveKing(pieces.get(i));
-                    } else if (type.contains("Q")) {
-                        moveQueen(pieces.get(i));
-                    }
-                    System.out.println(pieces.get(i).type);
-                }
+            int x = (int)Math.floor(((int)event.getX() - 280) / 90);
+            int y = (int)Math.floor((int)event.getY() / 90);
+            for (int v = 0; v < pos.size(); v++) {
+                group.getChildren().remove(pos.get(v));
             }
+            pos.clear();
+            if (possible.size() > 0) {
+                for (int i = 0; i < possible.size(); i++) {
+                    if (possible.get(i)[0] == x && possible.get(i)[1] == y) {
+                        for (int n = 0; n < pieces.size(); n++) {
+                            Piece p = pieces.get(n);
+                            int xX = (int)Math.floor((p.getX() - 280) / 90);
+                            int yY = (int)Math.floor(p.getY() / 90);
+                            if (xX == x && yY == y) {
+                                doScoring(p);
+                                group.getChildren().remove(pieces.get(n));
+                                grid[xX][yY] = 0;
+                                pieces.get(n).setX(-100);
+                            }
+                        }
+                        Piece p = pieces.get(placeHolder);
+                        int xX = (int)Math.floor((p.getX() - 280) / 90);
+                        int yY = (int)Math.floor(p.getY() / 90);
+                        grid[xX][yY] = 0;
+                        pieces.get(placeHolder).setX(x * 90 + 280);
+                        pieces.get(placeHolder).setY(y * 90);
+                        xX = (int)Math.floor((p.getX() - 280) / 90);
+                        yY = (int)Math.floor(p.getY() / 90);
+                        if (p.type.contains("w")) {
+                            grid[xX][yY] = 1;
+                        } else {
+                            grid[xX][yY] = 2;
+                        }
+                        pieces.get(placeHolder).moves++;
+                        pieceMoved();
+                    }
+                } //for
+            }
+            checkPieces(x, y);
         };
     } // createMouseHandler
 
 
+    public void checkPieces(int x, int y) {
+        for (int i = 0; i < pieces.size(); i++) {
+            if ((int)Math.floor((pieces.get(i).getX() - 280) / 90) == x &&
+                (int)Math.floor(pieces.get(i).getY() / 90) == y) {
+                placeHolder = i;
+                String type = pieces.get(i).type;
+                possible = new ArrayList<int[]>();
+                if (type.contains("w") && turn) {
+                    if (type.equals("wP")) {
+                        showWhitePawn(pieces.get(i));
+                    } else if (type.contains("R")) {
+                        showRook(pieces.get(i));
+                    } else if (type.contains("H")) {
+                        showHorse(pieces.get(i));
+                    } else if (type.contains("B")) {
+                        showBishop(pieces.get(i));
+                    } else if (type.contains("K")) {
+                        showKing(pieces.get(i));
+                    } else if (type.contains("Q")) {
+                        showQueen(pieces.get(i));
+                    }
+                } else if (type.contains("b") && !turn) {
+                    if (type.equals("bP")) {
+                        showBlackPawn(pieces.get(i));
+                    } else if (type.contains("R")) {
+                        showRook(pieces.get(i));
+                    } else if (type.contains("H")) {
+                        showHorse(pieces.get(i));
+                    } else if (type.contains("B")) {
+                        showBishop(pieces.get(i));
+                    } else if (type.contains("K")) {
+                        showKing(pieces.get(i));
+                    } else if (type.contains("Q")) {
+                        showQueen(pieces.get(i));
+                    }
+                }
+            }
+        }
+    }
+
+    public void pieceMoved() {
+        if (turn) {
+            turn = false;
+        } else {
+            turn = true;
+        }
+    }
+
+    public void showGreen() {
+        for (int i = 0; i < possible.size(); i++) {
+            Rectangle r = new Rectangle(90, 90);
+            r.setFill(new ImagePattern(posRoute));
+            r.setX(possible.get(i)[0] * 90 + 280);
+            r.setY(possible.get(i)[1] * 90);
+            pos.add(r);
+        }
+        for (int i = 0; i < pos.size(); i++) {
+            group.getChildren().add(pos.get(i));
+        }
+    }
+
+    public void showWhitePawn(Piece p) {
+        int xX = (int)Math.floor((p.getX() - 280) / 90);
+        int yY = (int)Math.floor(p.getY() / 90);
+        if (p.moves == 0) {
+            if (grid[xX][yY - 2] == 0) {
+                int[] temp = {xX, yY - 2};
+                possible.add(temp);
+            }
+        }
+        if (grid[xX][yY - 1] == 0) {
+            int[] temp = {xX, yY - 1};
+            possible.add(temp);
+        }
+        try {
+            if (grid[xX + 1][yY - 1] == 2) {
+                int[] temp = {(xX + 1), (yY - 1)};
+                possible.add(temp);
+            }
+            if (grid[xX - 1][yY - 1] == 2) {
+                int[] temp = {xX - 1, yY - 1};
+                possible.add(temp);
+            }
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.print("");
+        }
+        showGreen();
+    }
+
+    public void showBlackPawn(Piece p) {
+        int xX = (int)Math.floor((p.getX() - 280) / 90);
+        int yY = (int)Math.floor(p.getY() / 90);
+        if (p.moves == 0) {
+            if (grid[xX][yY + 2] == 0) {
+                int[] temp = {xX, yY + 2};
+                possible.add(temp);
+            }
+        }
+        if (grid[xX][yY + 1] == 0) {
+            int[] temp = {xX, yY + 1};
+            possible.add(temp);
+        }
+        try {
+            if (grid[xX + 1][yY + 1] == 1) {
+                int[] temp = {xX + 1, yY + 1};
+                possible.add(temp);
+            }
+            if (grid[xX - 1][yY + 1] == 1) {
+                int[] temp = {xX - 1, yY + 1};
+                possible.add(temp);
+            }
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.print("");
+        }
+        showGreen();
+    }
+
+    public void showRook(Piece p) {
+
+    }
+
+    public void showBishop(Piece p) {
+
+    }
+
+    public void showHorse(Piece p) {
+
+    }
+
+    public void showQueen(Piece p) {
+
+    }
+
+    public void showKing(Piece p) {
+
+    }
+
+    public void doScoring(Piece p) {
+        if (p.type.contains("w")) {
+            if (p.type.contains("P")) {
+                scoreTwo += 1;
+                scoreOne -= 1;
+            } else if (p.type.contains("B")) {
+                scoreTwo += 3;
+                scoreOne -= 3;
+            } else if (p.type.contains("H")) {
+                scoreTwo += 3;
+                scoreOne -= 3;
+            } else if (p.type.contains("R")) {
+                scoreTwo += 5;
+                scoreOne -= 5;
+            } else if (p.type.contains("Q")) {
+                scoreTwo += 10;
+                scoreOne -= 10;
+            }
+        } else {
+            if (p.type.contains("P")) {
+                scoreTwo -= 1;
+                scoreOne += 1;
+            } else if (p.type.contains("B")) {
+                scoreTwo -= 3;
+                scoreOne += 3;
+            } else if (p.type.contains("H")) {
+                scoreTwo -= 3;
+                scoreOne += 3;
+            } else if (p.type.contains("R")) {
+                scoreTwo -= 5;
+                scoreOne += 5;
+            } else if (p.type.contains("Q")) {
+                scoreTwo -= 10;
+                scoreOne += 10;
+            }
+        }
+        score1Text.setText("" + scoreOne);
+        score2Text.setText("" + scoreTwo);
+    }
 
 }

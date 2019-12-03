@@ -15,6 +15,7 @@ public class Piece extends Rectangle{
     String type; //the type of piece to be used
     ImagePattern png; //the image of the piece
     Rectangle r;
+    int moves = 0;
 
     public Piece(int x, int y, String type) {
         super(90, 90);
