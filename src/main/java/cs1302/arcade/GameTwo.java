@@ -140,6 +140,12 @@ public class GameTwo {
     int placeHolder = 0;
     ArrayList<Rectangle> pos = new ArrayList<Rectangle>();
 
+    /**
+     * Determines the location of the mouse click, and results in
+     * the moving of a chess piece.
+     *
+     * @return EventHandler the event handler to be returned.
+     */
     private EventHandler<? super MouseEvent> createMouseHandler() {
         return event -> {
             int x = (int)Math.floor(((int)event.getX() - 280) / 90);
@@ -184,7 +190,13 @@ public class GameTwo {
         };
     } // createMouseHandler
 
-
+    
+    /**
+     * This method checks the piece that the user clicked.
+     *
+     * @param x the spot of the x coordianate
+     * @param y the spot on the y-axis
+     */
     public void checkPieces(int x, int y) {
         for (int i = 0; i < pieces.size(); i++) {
             if ((int)Math.floor((pieces.get(i).getX() - 280) / 90) == x &&
@@ -225,6 +237,10 @@ public class GameTwo {
         }
     }
 
+    /**
+     * The method that determines who's turn it is.
+     *
+     */
     public void pieceMoved() {
         if (turn) {
             turn = false;
@@ -233,6 +249,10 @@ public class GameTwo {
         }
     }
 
+    /**
+     * Fills the availiable spots for a piece with a green outline.
+     *
+     */
     public void showGreen() {
         for (int i = 0; i < possible.size(); i++) {
             Rectangle r = new Rectangle(90, 90);
@@ -246,6 +266,11 @@ public class GameTwo {
         }
     }
 
+    /**
+     * Determines the availiable spot for the white pawn.
+     *
+     * @param p The piece to be moved
+     */
     public void showWhitePawn(Piece p) {
         int xX = (int)Math.floor((p.getX() - 280) / 90);
         int yY = (int)Math.floor(p.getY() / 90);
@@ -274,6 +299,11 @@ public class GameTwo {
         showGreen();
     }
 
+    /**
+     * Determines the availiable spot for the black pawn.
+     *
+     * @param p The piece to be moved
+     */ 
     public void showBlackPawn(Piece p) {
         int xX = (int)Math.floor((p.getX() - 280) / 90);
         int yY = (int)Math.floor(p.getY() / 90);
@@ -302,26 +332,56 @@ public class GameTwo {
         showGreen();
     }
 
+    /**
+     * Determines the availiable spot for the rook.
+     *
+     * @param p The piece that is being moved
+     */
     public void showRook(Piece p) {
 
     }
 
+    /**
+     * Determines the availiable spot for the bishop.
+     *
+     * @param p The piece that is being moved
+     */
     public void showBishop(Piece p) {
 
     }
 
+    /**
+     * Determines the availiable spot for the bishop.
+     *
+     * @param p The piece that is being moved  
+     */
     public void showHorse(Piece p) {
 
     }
 
+    /**
+     * Determines the availiable spot for the queen.
+     *
+     * @param p The piece that is being moved  
+     */
     public void showQueen(Piece p) {
 
     }
 
+    /**
+     * Determines the availiable spot for the king.
+     *
+     * @param p The piece that is being moved  
+     */
     public void showKing(Piece p) {
 
     }
 
+    /**
+     * This method keeps track of the scoring.
+     *
+     * @param p The piece to be scored
+     */
     public void doScoring(Piece p) {
         if (p.type.contains("w")) {
             if (p.type.contains("P")) {
