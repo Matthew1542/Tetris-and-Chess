@@ -159,7 +159,9 @@ public class GameOne {
 
     int timer = 0;
     boolean playing = true;
-
+    File scoreTetris = new File("resources/scoreTetris.txt");
+    Text gameOver = new Text("GAME OVER");
+    
     /**
      * Main runner class for the game.
      */
@@ -171,7 +173,6 @@ public class GameOne {
             timer = 0;
         }
         if (timer == 3) {
-            Text gameOver = new Text("GAME OVER");
             gameOver.setX(180);
             gameOver.setY(360);
             gameOver.setFill(Color.RED);
@@ -179,18 +180,16 @@ public class GameOne {
             group.getChildren().add(gameOver);
             playing = false;
         }
-
         if (timer == 12) {
             ArrayList<Integer> topScores = new ArrayList<Integer>();
             try {
-                File scoreTetris = new File("resources/scoreTetris.txt");
+                
                 Scanner scanner = new Scanner(scoreTetris);
                 while (scanner.hasNextInt()) {
                     topScores.add(scanner.nextInt());
                 } //while loop
             } catch (FileNotFoundException e) {
-                System.err.println(e);
-                e.printStackTrace();
+                System.out.print("");
             } //try
             for (int i = 0; i < topScores.size(); i++) {
                 if (score > topScores.get(i)) {
@@ -199,13 +198,11 @@ public class GameOne {
                 }  
             }  
         }
-
         if (timer == 20) {
             app.gameState = "MENU";
             app.updateScene();
             timeline.stop();
         }
-
         if (playing) {
             moveDown(mainBlock);
             scoreText.setText("Score: " + score);

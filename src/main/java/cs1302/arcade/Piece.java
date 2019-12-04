@@ -10,13 +10,20 @@ import javafx.scene.paint.ImagePattern;
  * The pieces that are being used in chess.
  *
  */
-public class Piece extends Rectangle{
+public class Piece extends Rectangle {
 
     String type; //the type of piece to be used
     ImagePattern png; //the image of the piece
     Rectangle r;
     int moves = 0;
 
+    /**
+     * The constructor for the piece class.
+     *
+     * @param x the place on the x axis the piece is.
+     * @param y the place on the y coordinate.
+     * @param type the kind of piece (king, queen, etc.)
+     */
     public Piece(int x, int y, String type) {
         super(90, 90);
         this.setX(x);
@@ -26,6 +33,12 @@ public class Piece extends Rectangle{
         setImage(type);
     } //constructor
 
+    /**
+     * This method sets the image based on the input
+     * parameter. 
+     *
+     * @param type the type of piece that will be made
+     */
     public void setImage(String type) {
         if (type.equals("wP")) {
             this.png = new ImagePattern(new Image("file:resources/whitePawn.png"));

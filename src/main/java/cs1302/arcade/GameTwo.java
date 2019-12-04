@@ -32,7 +32,12 @@ import java.io.File;
 import java.util.Scanner;
 import java.io.FileNotFoundException;
 import javafx.scene.paint.ImagePattern;
-
+import javafx.animation.Timeline;
+import javafx.animation.KeyFrame;
+import javafx.util.Duration;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 
 /**
  * This class is the main class for a javaFX game of chess.
@@ -49,12 +54,15 @@ public class GameTwo {
 
 
     Group group = new Group();
+    KeyFrame keyFrame;
+    Timeline timeline;
     ArcadeApp app;
     Scene scene;
     Text score1Text;
     Text score2Text;
-    int scoreOne = 100; //score goes down with each loss of a piece
-    int scoreTwo = 100; //score goes down with each loss of a piece
+    int scoreOne = 0; //score goes down with each loss of a piece
+    int scoreTwo = 0; //score goes down with each loss of a piece
+    int timer = 0;
 
     Boolean turn = true; //which turn it is
 
@@ -124,7 +132,7 @@ public class GameTwo {
             });
         group.getChildren().addAll(quit, score1Text, score2Text);
         group.setOnMouseClicked(createMouseHandler());
-
+        makeTimeline(1000);
     } //gameTwo
 
     /**
@@ -183,6 +191,7 @@ public class GameTwo {
                         }
                         pieces.get(placeHolder).moves++;
                         pieceMoved();
+                        checkPawn(pieces.get(placeHolder));
                     }
                 } //for
             }
@@ -248,6 +257,34 @@ public class GameTwo {
             turn = true;
         }
     }
+    
+    /**
+     * Creates a timeline to run the game loop with a variable delay.
+     * @param milis The miliseconds between each loop execution.
+     */
+    private void makeTimeline(int milis) {
+        EventHandler<ActionEvent> handler = event -> timer();
+        keyFrame = new KeyFrame(Duration.millis(milis), handler);
+        timeline = new Timeline();
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.getKeyFrames().add(keyFrame);
+        timeline.play();
+        timeline.stop();
+    }
+    
+    /**
+     * Heleper method to keep track of time and exit to menu
+     * at the desired time.
+     *
+     */    
+    public void timer() {
+        timer++;
+        if (timer == 10) {
+            app.gameState = "MENU";
+            app.updateScene();
+            timeline.stop();
+        }
+    }
 
     /**
      * Fills the availiable spots for a piece with a green outline.
@@ -265,6 +302,52 @@ public class GameTwo {
             group.getChildren().add(pos.get(i));
         }
     }
+    
+    /**
+     * Helper method to check if the spot at x or
+     * y are taken by a piece.
+     *
+     * @param x the spot on the x axis
+     * @param y the hight of the move
+     * @return true if you can move to the spot 
+     */    
+    public boolean checkMove(int x, int y) {
+        if (x > 7 || x < 0) {
+            return false;
+        }
+        if (y > 7 || y < 0) {
+            return false;
+        }
+        return true;
+    }
+    
+    /**
+     * Checks if the pawn is in the back of the board.
+     * If so, the piece turns into a Queen.
+     * 
+     * @param p the piece to be checked 
+     */    
+    public void checkPawn(Piece p) {
+        int xX = (int)Math.floor((p.getX() - 280) / 90);
+        int yY = (int)Math.floor(p.getY() / 90);
+        int color = 1;
+        if (p.type.contains("b")) {
+            color = 2;
+        }
+        if (p.type.contains("P")) {
+            if (color == 1) {
+                if (yY == 0) {
+                    p.type = "wQ";
+                    p.setImage("wQ");
+                }
+            } else {
+                if (yY == 7) {
+                    p.type = "bQ";
+                    p.setImage("bQ");
+                } 
+            }
+        }
+    } 
 
     /**
      * Determines the availiable spot for the white pawn.
@@ -284,17 +367,17 @@ public class GameTwo {
             int[] temp = {xX, yY - 1};
             possible.add(temp);
         }
-        try {
+        if (checkMove(xX + 1, yY - 1)) {
             if (grid[xX + 1][yY - 1] == 2) {
-                int[] temp = {(xX + 1), (yY - 1)};
+                int[] temp = {xX + 1, yY - 1};
                 possible.add(temp);
             }
+        }
+        if (checkMove(xX - 1, yY - 1)) {
             if (grid[xX - 1][yY - 1] == 2) {
                 int[] temp = {xX - 1, yY - 1};
                 possible.add(temp);
             }
-        } catch (ArrayIndexOutOfBoundsException e) {
-            System.out.print("");
         }
         showGreen();
     }
@@ -317,17 +400,17 @@ public class GameTwo {
             int[] temp = {xX, yY + 1};
             possible.add(temp);
         }
-        try {
+        if (checkMove(xX + 1, yY + 1)) {
             if (grid[xX + 1][yY + 1] == 1) {
                 int[] temp = {xX + 1, yY + 1};
                 possible.add(temp);
             }
+        }
+        if (checkMove(xX - 1, yY + 1)) {
             if (grid[xX - 1][yY + 1] == 1) {
                 int[] temp = {xX - 1, yY + 1};
                 possible.add(temp);
             }
-        } catch (ArrayIndexOutOfBoundsException e) {
-            System.out.print("");
         }
         showGreen();
     }
@@ -338,7 +421,80 @@ public class GameTwo {
      * @param p The piece that is being moved
      */
     public void showRook(Piece p) {
-
+        int xX = (int)Math.floor((p.getX() - 280) / 90);
+        int yY = (int)Math.floor(p.getY() / 90);
+        int color = 1;
+        if (p.type.contains("b")) {
+            color = 2;
+        }
+        shortRook(xX, yY, color);
+        showGreen(); //show the green     
+    } //showRook
+    
+    /**
+     * The helper method to assist with the movement of the rook.
+     *
+     * @param xX the location of getX() of the piece
+     * @param yY the location of getY() of the piece
+     * @param color the turn of the player 
+     */    
+    public void shortRook(int xX, int yY, int color) {
+        for (int i = xX + 1; i < 8; i++) { 
+            if (checkMove(i, yY)) { 
+                if (grid[i][yY] == 0) { 
+                    int[] temp = {i, yY};
+                    possible.add(temp);  
+                } else if (grid[i][yY] != color) {
+                    int[] temp = {i, yY};
+                    possible.add(temp);  
+                    break;
+                } else { 
+                    break;
+                } //else
+            } //if  
+        } //for        
+        for (int i = xX - 1; i >= 0; i--) { 
+            if (checkMove(i, yY)) { 
+                if (grid[i][yY] == 0) { 
+                    int[] temp = {i, yY};
+                    possible.add(temp);  
+                } else if (grid[i][yY] != color) {
+                    int[] temp = {i, yY};
+                    possible.add(temp);  
+                    break;
+                } else { 
+                    break;
+                } //else
+            } //if  
+        } //for        
+        for (int i = yY + 1; i < 8; i++) { 
+            if (checkMove(xX, i)) { 
+                if (grid[xX][i] == 0) { 
+                    int[] temp = {xX, i};
+                    possible.add(temp);  
+                } else if (grid[xX][i] != color) {
+                    int[] temp = {xX, i};
+                    possible.add(temp);  
+                    break;
+                } else { 
+                    break;
+                } //else
+            } //if  
+        } //for        
+        for (int i = yY - 1; i >= 0; i--) { 
+            if (checkMove(xX, i)) { 
+                if (grid[xX][i] == 0) { 
+                    int[] temp = {xX, i};
+                    possible.add(temp);  
+                } else if (grid[xX][i] != color) {
+                    int[] temp = {xX, i};
+                    possible.add(temp);  
+                    break;
+                } else { 
+                    break;
+                } //else
+            } //if  
+        } //for  
     }
 
     /**
@@ -347,7 +503,80 @@ public class GameTwo {
      * @param p The piece that is being moved
      */
     public void showBishop(Piece p) {
-
+        int xX = (int)Math.floor((p.getX() - 280) / 90);
+        int yY = (int)Math.floor(p.getY() / 90);
+        int color = 1;
+        if (p.type.contains("b")) {
+            color = 2;
+        }
+        shortBishop(xX, yY, color);
+        showGreen(); //show the green 
+    }
+    
+    /**
+     * Helper method to assist with the creation of the bishop.
+     *
+     * @param xX the location of getX() of the piece
+     * @param yY the location of getY() of the piece
+     * @param color the turn of the player
+     */    
+    public void shortBishop(int xX, int yY, int color) {
+        for (int i = xX + 1; i < 8; i++) {
+            if (checkMove(i, yY + i - xX)) { 
+                if (grid[i][yY + i - xX] == 0) { 
+                    int[] temp = {i, yY + i - xX};
+                    possible.add(temp);  
+                } else if (grid[i][yY + i - xX] != color) {
+                    int[] temp = {i, yY + i - xX};
+                    possible.add(temp);  
+                    break;
+                } else { 
+                    break;
+                } //else
+            } //if  
+        }
+        for (int i = xX - 1; i >= 0; i--) {
+            if (checkMove(i, yY + i - xX)) { 
+                if (grid[i][yY + i - xX] == 0) { 
+                    int[] temp = {i, yY + i - xX};
+                    possible.add(temp);  
+                } else if (grid[i][yY + i - xX] != color) {
+                    int[] temp = {i, yY + i - xX};
+                    possible.add(temp);  
+                    break;
+                } else { 
+                    break;
+                } //else
+            } //if  
+        }
+        for (int i = xX + 1; i < 8; i++) {
+            if (checkMove(i, yY - (i - xX))) { 
+                if (grid[i][yY - (i - xX)] == 0) { 
+                    int[] temp = {i, yY - (i - xX)};
+                    possible.add(temp);  
+                } else if (grid[i][yY - (i - xX)] != color) {
+                    int[] temp = {i, yY - (i - xX)};
+                    possible.add(temp);  
+                    break;
+                } else { 
+                    break;
+                } //else
+            } //if  
+        }
+        for (int i = xX - 1; i >= 0; i--) {
+            if (checkMove(i, yY - (i - xX))) { 
+                if (grid[i][yY - (i - xX)] == 0) { 
+                    int[] temp = {i, yY - (i - xX)};
+                    possible.add(temp);  
+                } else if (grid[i][yY - (i - xX)] != color) {
+                    int[] temp = {i, yY - (i - xX)};
+                    possible.add(temp);  
+                    break;
+                } else { 
+                    break;
+                } //else
+            } //if  
+        }
     }
 
     /**
@@ -356,7 +585,61 @@ public class GameTwo {
      * @param p The piece that is being moved  
      */
     public void showHorse(Piece p) {
-
+        int xX = (int)Math.floor((p.getX() - 280) / 90);
+        int yY = (int)Math.floor(p.getY() / 90);
+        int color = 1;
+        if (p.type.contains("b")) {
+            color = 2;
+        }
+        if (checkMove(xX - 2, yY + 1)) {
+            if (grid[xX - 2][yY + 1] !=  color) {
+                int[] temp = {xX - 2, yY + 1};
+                possible.add(temp);
+            }
+        }
+        if (checkMove(xX - 2, yY - 1)) {
+            if (grid[xX - 2][yY - 1] !=  color) {
+                int[] temp = {xX - 2, yY - 1};
+                possible.add(temp);
+            }
+        }
+        if (checkMove(xX - 1, yY + 2)) {
+            if (grid[xX - 1][yY + 2] !=  color) {
+                int[] temp = {xX - 1, yY + 2};
+                possible.add(temp);
+            }
+        }
+        if (checkMove(xX - 1, yY - 2)) {
+            if (grid[xX - 1][yY - 2] !=  color) {
+                int[] temp = {xX - 1, yY - 2};
+                possible.add(temp);
+            }
+        }
+        if (checkMove(xX + 2, yY + 1)) {
+            if (grid[xX + 2][yY + 1] !=  color) {
+                int[] temp = {xX + 2, yY + 1};
+                possible.add(temp);
+            }
+        }
+        if (checkMove(xX + 2, yY - 1)) {
+            if (grid[xX + 2][yY - 1] !=  color) {
+                int[] temp = {xX + 2, yY - 1};
+                possible.add(temp);
+            }
+        }
+        if (checkMove(xX + 1, yY + 2)) {
+            if (grid[xX + 1][yY + 2] !=  color) {
+                int[] temp = {xX + 1, yY + 2};
+                possible.add(temp);
+            }
+        }
+        if (checkMove(xX + 1, yY - 2)) {
+            if (grid[xX + 1][yY - 2] !=  color) {
+                int[] temp = {xX + 1, yY - 2};
+                possible.add(temp);
+            }
+        }
+        showGreen();
     }
 
     /**
@@ -365,7 +648,15 @@ public class GameTwo {
      * @param p The piece that is being moved  
      */
     public void showQueen(Piece p) {
-
+        int xX = (int)Math.floor((p.getX() - 280) / 90);
+        int yY = (int)Math.floor(p.getY() / 90);
+        int color = 1;
+        if (p.type.contains("b")) {
+            color = 2;
+        }
+        shortRook(xX, yY, color);
+        shortBishop(xX, yY, color);
+        showGreen(); //show the green 
     }
 
     /**
@@ -374,7 +665,23 @@ public class GameTwo {
      * @param p The piece that is being moved  
      */
     public void showKing(Piece p) {
-
+        int xX = (int)Math.floor((p.getX() - 280) / 90);
+        int yY = (int)Math.floor(p.getY() / 90);
+        int color = 1;
+        if (p.type.contains("b")) {
+            color = 2;
+        }
+        for (int i = -1; i < 2; i++) {
+            for (int j = -1; j < 2; j++) {
+                if (checkMove(xX + i, yY + j)) {
+                    if (grid[xX + i][yY + j] !=  color) {
+                        int[] temp = {xX + i, yY + j};
+                        possible.add(temp);
+                    }
+                } 
+            }
+        }
+        showGreen();
     }
 
     /**
@@ -383,39 +690,45 @@ public class GameTwo {
      * @param p The piece to be scored
      */
     public void doScoring(Piece p) {
-        if (p.type.contains("w")) {
+        if (p.type.contains("b")) {
             if (p.type.contains("P")) {
                 scoreTwo += 1;
-                scoreOne -= 1;
             } else if (p.type.contains("B")) {
                 scoreTwo += 3;
-                scoreOne -= 3;
             } else if (p.type.contains("H")) {
                 scoreTwo += 3;
-                scoreOne -= 3;
             } else if (p.type.contains("R")) {
                 scoreTwo += 5;
-                scoreOne -= 5;
             } else if (p.type.contains("Q")) {
                 scoreTwo += 10;
-                scoreOne -= 10;
+            } else if (p.type.contains("K")) {
+                timeline.play();
+                Text gameOver = new Text("GAME OVER");
+                gameOver.setX(180);
+                gameOver.setY(360);
+                gameOver.setFill(Color.RED);
+                gameOver.setFont(Font.font("Verdana", FontWeight.BOLD, 150));
+                group.getChildren().add(gameOver);  
             }
         } else {
             if (p.type.contains("P")) {
-                scoreTwo -= 1;
                 scoreOne += 1;
             } else if (p.type.contains("B")) {
-                scoreTwo -= 3;
                 scoreOne += 3;
             } else if (p.type.contains("H")) {
-                scoreTwo -= 3;
                 scoreOne += 3;
             } else if (p.type.contains("R")) {
-                scoreTwo -= 5;
                 scoreOne += 5;
             } else if (p.type.contains("Q")) {
-                scoreTwo -= 10;
                 scoreOne += 10;
+            } else if (p.type.contains("K")) {
+                timeline.play();
+                Text gameOver = new Text("GAME OVER");
+                gameOver.setX(180);
+                gameOver.setY(360);
+                gameOver.setFill(Color.RED);
+                gameOver.setFont(Font.font("Verdana", FontWeight.BOLD, 150));
+                group.getChildren().add(gameOver);
             }
         }
         score1Text.setText("" + scoreOne);
