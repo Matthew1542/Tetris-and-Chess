@@ -265,6 +265,8 @@ public class GameOne {
 
     /**
      * Pops up a box to get the initials of the players involved in the game.
+     *
+     * @return The initials input by the user.
      */
     public String getInitials() {
         TextInputDialog dialog = new TextInputDialog("");

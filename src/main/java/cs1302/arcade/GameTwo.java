@@ -163,6 +163,9 @@ public class GameTwo {
     /**
      * Gets and then updates the scores in the *hidden* file that keeps
      * track of the scores for the game.
+     *
+     * @param score The score that the user got.
+     * @param initials The initials of the user that won.
      */
     public void scoreUpdate(int score, String initials) {
         scoreChess = new File("resources/scoreChess.txt");
@@ -203,6 +206,8 @@ public class GameTwo {
 
     /**
      * Pops up a box to get the initials of the players involved in the game.
+     *
+     * @return The initials of the player one.
      */
     public String getInitialsOne() {
         TextInputDialog dialog = new TextInputDialog("");
@@ -219,6 +224,8 @@ public class GameTwo {
     
     /**
      * Pops up a box to get the initials of the players involved in the game.
+     *
+     * @return The initials of the player two.
      */
     public String getInitialsTwo() {
         TextInputDialog dialog = new TextInputDialog("");
@@ -797,7 +804,7 @@ public class GameTwo {
                 gameOver.setFill(Color.RED);
                 gameOver.setFont(Font.font("Verdana", FontWeight.BOLD, 150));
                 group.getChildren().add(gameOver);  
-                scoreUpdate(scoreTwo, initialsTwo);
+                scoreUpdate(scoreTwo, initialsOne);
                 timeline.play();
             }
         } else {
@@ -818,7 +825,7 @@ public class GameTwo {
                 gameOver.setFill(Color.RED);
                 gameOver.setFont(Font.font("Verdana", FontWeight.BOLD, 150));
                 group.getChildren().add(gameOver);
-                scoreUpdate(scoreOne, initialsOne);
+                scoreUpdate(scoreOne, initialsTwo);
                 timeline.play();
             }
         }

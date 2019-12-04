@@ -31,6 +31,17 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.stage.Modality;
+import javafx.scene.text.FontWeight;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileNotFoundException;
+import java.io.File;
+import javafx.scene.text.Text;
 
 /**
  * Application subclass for {@code ArcadeApp}.
@@ -46,8 +57,6 @@ public class ArcadeApp extends Application {
     Rectangle name = new Rectangle(1280, 720);
     Timeline timeline = new Timeline();
     MenuBar menuBar;
-    Menu menu;
-    
     GameOne gameOne;
     GameTwo gameTwo;
 
@@ -122,8 +131,7 @@ public class ArcadeApp extends Application {
             stage.setTitle("Tetris");
         } else if (gameState.equals("GAMETWO")) {
             gameTwo = new GameTwo(this);
-            stage.setScene(gameTwo.getScene());
-            
+            stage.setScene(gameTwo.getScene()); 
             stage.setTitle("Chess");
         } else { 
             System.out.println("INVALID GAMESTATE");
@@ -175,50 +183,101 @@ public class ArcadeApp extends Application {
         }
     }
 
-    public MenuBar menuMaker() {        
+    /**
+     * Makes a menu bar and adds it to the scene.
+     *
+     * @return The created menu bar to be added to the scene.
+     */
+    public MenuBar menuMaker() {       
         MenuBar menBar = new MenuBar();
-        Menu menu = new Menu("High scores");
-        menBar.getMenus().addAll(menu); //add to bar
-
-        MenuItem tetrisItem = new MenuItem("Tetris");
-        MenuItem chessItem = new MenuItem("Chess");
-
-        tetrisItem.setOnAction(new EventHandler<ActionEvent>() {
-                @Override public void handle(ActionEvent e) {
-                    //Swap stage to tetris scores
-                }
-            });
-        chessItem.setOnAction(new EventHandler<ActionEvent>() {
-                @Override public void handle(ActionEvent e) {
-                    //Swap stage to chess scene
-                }
-            });
-        menu.getItems().addAll(tetrisItem, chessItem);
+        try {
+            Menu menu = new Menu("High scores");
+            menBar.getMenus().addAll(menu); //add to bar
+    
+            MenuItem tetrisItem = new MenuItem("Tetris");
+            MenuItem chessItem = new MenuItem("Chess");
+    
+            tetrisItem.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override public void handle(ActionEvent e) {
+                        getScoreScene(1);
+                    }
+                });
+            chessItem.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override public void handle(ActionEvent e) {
+                        getScoreScene(2);
+                    }
+                });
+            menu.getItems().addAll(tetrisItem, chessItem);
+        } catch (NullPointerException e) {
+            System.out.print("");
+        }
         return menBar;
-
     } //menu
+    
+    File scoreTetris = new File("resources/scoreTetris.txt");
+    File scoreChess = new File("resources/scoreChess.txt");
 
-    public Scene getScoreScene() {
-        File scoreTetris = new File("resources/scoreTetris.txt");
+    /**
+     * Pops Up a new window that shows the scores of the designated game.
+     * 
+     * @param g The "game" being looked at.
+     */
+    public void getScoreScene(int g) {
+        Group groupT = new Group();
+        Scene sceneT = new Scene(groupT, 640, 720);
+        Stage stageT = new Stage();
+        stageT.setScene(sceneT);
+        stageT.initOwner(stage);
+        stageT.initModality(Modality.APPLICATION_MODAL);
+        Text title = new Text();
+        Text scoreOne = new Text();
+        Text scoreTwo = new Text();
+        Text scoreThree = new Text();
         ArrayList<Integer> topScores = new ArrayList<>();
         ArrayList<String> topInitials = new ArrayList<>();
+        File scoreT = new File("");
+        if (g == 1) {
+            scoreT = scoreTetris;
+            title.setText("Tetris Top Scores:");
+        } else if (g == 2) {
+            scoreT = scoreChess;
+            title.setText("Chess Top Scores:");
+        }
         try {
             String line = "";
-            BufferedReader br = new BufferedReader(new FileReader(scoreTetris));
-            while ((line = br.readLine) != null) {
+            BufferedReader br = new BufferedReader(new FileReader(scoreT));
+            while ((line = br.readLine()) != null) {
                 String[] temp = line.split(",");
-                topIntitials.add(temp[0] + "");
-                topScores.add(Integer.parseInt(temp[1]));
-                
+                topInitials.add(temp[0] + "");
+                topScores.add(Integer.parseInt(temp[1]));        
             } //while
-
-            br.close(0);
-
+            br.close();
         } catch (FileNotFoundException e) {
             System.out.println("ERROR");
-
+        } catch (IOException e) {
+            System.out.println("ERROR");
         } //catch
-
+        scoreOne.setText(topInitials.get(0) + ":  " + topScores.get(0));
+        scoreTwo.setText(topInitials.get(1) + ":  " + topScores.get(1));
+        scoreThree.setText(topInitials.get(2) + ":  " + topScores.get(2));
+        title.setFont(Font.font("Verdana", FontWeight.BOLD, 40));
+        scoreOne.setFont(Font.font("Verdana", FontWeight.BOLD, 40));
+        scoreTwo.setFont(Font.font("Verdana", FontWeight.BOLD, 40));
+        scoreThree.setFont(Font.font("Verdana", FontWeight.BOLD, 40));
+        title.setFill(Color.RED);
+        scoreOne.setFill(Color.RED);
+        scoreTwo.setFill(Color.RED);
+        scoreThree.setFill(Color.RED);
+        title.setX(100);
+        title.setY(100);
+        scoreOne.setX(100);
+        scoreOne.setY(200);
+        scoreTwo.setX(100);
+        scoreTwo.setY(300);
+        scoreThree.setX(100);
+        scoreThree.setY(400);
+        groupT.getChildren().addAll(title, scoreOne, scoreTwo, scoreThree);
+        stageT.showAndWait();
     } //getScoreScene
       
     /** {@inheritDoc} */
