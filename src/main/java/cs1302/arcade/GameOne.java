@@ -221,6 +221,10 @@ public class GameOne {
 
     File scoreTetris;
 
+    /**
+     * Gets and then updates the scores in the *hidden* file that keeps
+     * track of the scores for the game.
+     */
     public void scoreUpdate() {
         scoreTetris = new File("resources/scoreTetris.txt");
         ArrayList<Integer> topScores = new ArrayList<Integer>();
@@ -259,6 +263,9 @@ public class GameOne {
         }
     }
 
+    /**
+     * Pops up a box to get the initials of the players involved in the game.
+     */
     public String getInitials() {
         TextInputDialog dialog = new TextInputDialog("");
         String initials = "";

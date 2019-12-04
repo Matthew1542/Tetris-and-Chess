@@ -38,6 +38,15 @@ import javafx.util.Duration;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import java.util.Scanner;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
+import javafx.scene.control.TextInputDialog;
+import java.util.Optional;
 
 /**
  * This class is the main class for a javaFX game of chess.
@@ -63,6 +72,9 @@ public class GameTwo {
     int scoreOne = 0; //score goes down with each loss of a piece
     int scoreTwo = 0; //score goes down with each loss of a piece
     int timer = 0;
+
+    String initialsOne;
+    String initialsTwo;
 
     Boolean turn = true; //which turn it is
 
@@ -131,6 +143,8 @@ public class GameTwo {
                 }
             });
         group.getChildren().addAll(quit, score1Text, score2Text);
+        initialsOne = getInitialsOne();
+        initialsTwo = getInitialsTwo();
         group.setOnMouseClicked(createMouseHandler());
         makeTimeline(1000);
     } //gameTwo
@@ -143,6 +157,81 @@ public class GameTwo {
     public Scene getScene() {
         return scene;
     } //getter
+    
+    File scoreChess;
+    
+    /**
+     * Gets and then updates the scores in the *hidden* file that keeps
+     * track of the scores for the game.
+     */
+    public void scoreUpdate(int score, String initials) {
+        scoreChess = new File("resources/scoreChess.txt");
+        ArrayList<Integer> topScores = new ArrayList<Integer>();
+        ArrayList<String> topInitials = new ArrayList<String>();
+        try {
+            String line = "";
+            BufferedReader br = new BufferedReader(new FileReader(scoreChess));
+            while ((line = br.readLine()) != null) {
+                String[] temp = line.split(",");
+                topInitials.add(temp[0] + "");
+                topScores.add(Integer.parseInt(temp[1]));
+            }
+            br.close();
+            for (int i = 0; i < topScores.size(); i++) {
+                if (score > topScores.get(i)) {         
+                    String newInitials = initials;
+                    topScores.add(i, score);
+                    topInitials.add(i, newInitials);
+                    topScores.remove(topScores.size() - 1);
+                    topInitials.remove(topInitials.size() - 1);
+                    break;
+                }
+            }
+            scoreChess.delete();
+            scoreChess = new File("resources/scoreChess.txt");
+            BufferedWriter writer = new BufferedWriter(new FileWriter(scoreChess));
+            writer.write(topInitials.get(0) + "," + topScores.get(0) + "\n");
+            writer.write(topInitials.get(1) + "," + topScores.get(1) + "\n");
+            writer.write(topInitials.get(2) + "," + topScores.get(2));
+            writer.close();
+        } catch (FileNotFoundException e) {
+            System.out.print("ERROR");
+        } catch (IOException e) {
+            System.out.print("ERROR");
+        }
+    }
+
+    /**
+     * Pops up a box to get the initials of the players involved in the game.
+     */
+    public String getInitialsOne() {
+        TextInputDialog dialog = new TextInputDialog("");
+        String initials = "";
+        dialog.setTitle("Initial Input");
+        dialog.setHeaderText("Player One enter your initials:");
+        dialog.setContentText("Initials:");
+        Optional<String> result = dialog.showAndWait();
+        if (result.isPresent()) {
+            initials = result.get();
+        }
+        return initials;
+    }
+    
+    /**
+     * Pops up a box to get the initials of the players involved in the game.
+     */
+    public String getInitialsTwo() {
+        TextInputDialog dialog = new TextInputDialog("");
+        String initials = "";
+        dialog.setTitle("Initial Input");
+        dialog.setHeaderText("Player Two enter your initials:");
+        dialog.setContentText("Initials:");
+        Optional<String> result = dialog.showAndWait();
+        if (result.isPresent()) {
+            initials = result.get();
+        }
+        return initials;
+    }
 
     ArrayList<int[]> possible = new ArrayList<int[]>();
     int placeHolder = 0;
@@ -702,13 +791,14 @@ public class GameTwo {
             } else if (p.type.contains("Q")) {
                 scoreTwo += 10;
             } else if (p.type.contains("K")) {
-                timeline.play();
                 Text gameOver = new Text("GAME OVER");
                 gameOver.setX(180);
                 gameOver.setY(360);
                 gameOver.setFill(Color.RED);
                 gameOver.setFont(Font.font("Verdana", FontWeight.BOLD, 150));
                 group.getChildren().add(gameOver);  
+                scoreUpdate(scoreTwo, initialsTwo);
+                timeline.play();
             }
         } else {
             if (p.type.contains("P")) {
@@ -722,13 +812,14 @@ public class GameTwo {
             } else if (p.type.contains("Q")) {
                 scoreOne += 10;
             } else if (p.type.contains("K")) {
-                timeline.play();
                 Text gameOver = new Text("GAME OVER");
                 gameOver.setX(180);
                 gameOver.setY(360);
                 gameOver.setFill(Color.RED);
                 gameOver.setFont(Font.font("Verdana", FontWeight.BOLD, 150));
                 group.getChildren().add(gameOver);
+                scoreUpdate(scoreOne, initialsOne);
+                timeline.play();
             }
         }
         score1Text.setText("" + scoreOne);
