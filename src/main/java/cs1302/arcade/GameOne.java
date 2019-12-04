@@ -36,7 +36,14 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import java.io.File;
 import java.util.Scanner;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
+import javafx.scene.control.TextInputDialog;
+import java.util.Optional;
 
 /**
  * This class is a javaFX made game of tetris.
@@ -62,6 +69,7 @@ public class GameOne {
     KeyFrame keyFrame;
     Timeline timeline;
     ArcadeApp app;
+    String initials = "";
 
     /**
      * The constructor of the tetris game.
@@ -97,6 +105,7 @@ public class GameOne {
                 }
             });
         group.getChildren().addAll(board, quit, scoreText, levelText);
+        initials = getInitials();
         timeline = new Timeline();
         Block temp = nextBlock;
         group.getChildren().addAll(temp.r1, temp.r2, temp.r3, temp.r4);
@@ -159,9 +168,8 @@ public class GameOne {
 
     int timer = 0;
     boolean playing = true;
-    File scoreTetris = new File("resources/scoreTetris.txt");
     Text gameOver = new Text("GAME OVER");
-    
+
     /**
      * Main runner class for the game.
      */
@@ -179,26 +187,11 @@ public class GameOne {
             gameOver.setFont(Font.font("Verdana", FontWeight.BOLD, 150));
             group.getChildren().add(gameOver);
             playing = false;
+            timeline.stop();
+            scoreUpdate();
+            timeline.play();
         }
-        if (timer == 12) {
-            ArrayList<Integer> topScores = new ArrayList<Integer>();
-            try {
-                
-                Scanner scanner = new Scanner(scoreTetris);
-                while (scanner.hasNextInt()) {
-                    topScores.add(scanner.nextInt());
-                } //while loop
-            } catch (FileNotFoundException e) {
-                System.out.print("");
-            } //try
-            for (int i = 0; i < topScores.size(); i++) {
-                if (score > topScores.get(i)) {
-                    topScores.set(i, score);
-                    return;
-                }  
-            }  
-        }
-        if (timer == 20) {
+        if (timer == 10) {
             app.gameState = "MENU";
             app.updateScene();
             timeline.stop();
@@ -224,6 +217,59 @@ public class GameOne {
             level++;
             makeTimeline(1000 - 100 * level);
         }
+    }
+
+    File scoreTetris;
+
+    public void scoreUpdate() {
+        scoreTetris = new File("resources/scoreTetris.txt");
+        ArrayList<Integer> topScores = new ArrayList<Integer>();
+        ArrayList<String> topInitials = new ArrayList<String>();
+        try {
+            String line = "";
+            BufferedReader br = new BufferedReader(new FileReader(scoreTetris));
+            while ((line = br.readLine()) != null) {
+                String[] temp = line.split(",");
+                topInitials.add(temp[0] + "");
+                topScores.add(Integer.parseInt(temp[1]));
+            }
+            br.close();
+            for (int i = 0; i < topScores.size(); i++) {
+                if (score > topScores.get(i)) {
+                    String newInitials = initials;
+
+                    topScores.add(i, score);
+                    topInitials.add(i, newInitials);
+                    topScores.remove(topScores.size() - 1);
+                    topInitials.remove(topInitials.size() - 1);
+                    break;
+                }
+            }
+            scoreTetris.delete();
+            scoreTetris = new File("resources/scoreTetris.txt");
+            BufferedWriter writer = new BufferedWriter(new FileWriter(scoreTetris));
+            writer.write(topInitials.get(0) + "," + topScores.get(0) + "\n");
+            writer.write(topInitials.get(1) + "," + topScores.get(1) + "\n");
+            writer.write(topInitials.get(2) + "," + topScores.get(2));
+            writer.close();
+        } catch (FileNotFoundException e) {
+            System.out.print("ERROR");
+        } catch (IOException e) {
+            System.out.print("ERROR");
+        }
+    }
+
+    public String getInitials() {
+        TextInputDialog dialog = new TextInputDialog("");
+        String initials = "";
+        dialog.setTitle("Initial Input");
+        dialog.setHeaderText("Enter your initials:");
+        dialog.setContentText("Initials:");
+        Optional<String> result = dialog.showAndWait();
+        if (result.isPresent()) {
+            initials = result.get();
+        }
+        return initials;
     }
 
     /**
@@ -319,7 +365,7 @@ public class GameOne {
         if (block.rotation == 1) {
             if (checkRotate(block.r1, 1, 0) && checkRotate(block.r2, 0, 1) &&
                 checkRotate(block.r3, -1, 0) && checkRotate(block.r4, -2, 1)) {
-                    //if you are here, red has passed the rotation requirements.
+                //if you are here, red has passed the rotation requirements.
                 block.rotation++;
                 block.r1.setX(block.r1.getX() + 36); //shift spot of r1 block
                 block.r2.setY(block.r2.getY() + 36); //shift spot of r2 block
@@ -345,7 +391,7 @@ public class GameOne {
      * @param block The block being rotated.
      */
     public void rotateBlue(Block block) {
-          //Hard one, requires 4 total rotations
+        //Hard one, requires 4 total rotations
         if (block.rotation == 1) {
             if (checkRotate(block.r1, 2, 0) && checkRotate(block.r2, 1, -1) &&
                 checkRotate(block.r3, 0, 0) && checkRotate(block.r4, -1, 1)) {
@@ -547,9 +593,9 @@ public class GameOne {
     public boolean checkRotate(Rectangle r, int x, int y) {
         if (r.getX() + (x * 36) < 820 && r.getX() + (x * 36) >= 460 &&
             r.getY() + (y * 36) >= 0 && r.getY() + (y * 36) < 720) {
-              //if you are here, the block is not going to rotate into a wall
+            //if you are here, the block is not going to rotate into a wall
             if (grid[(int)((r.getX() - 460) / 36) + x][(int)(r.getY() / 36) + y] == false) {
-                    //here, there is no other block that is obstructing, so you can rotate
+                //here, there is no other block that is obstructing, so you can rotate
                 return true;
             }
         }
@@ -585,7 +631,7 @@ public class GameOne {
                         playing = false;
                     }
                 }
-                
+
                 Block temp = nextBlock;
                 nextBlock = makeBlock();
                 mainBlock = temp;
@@ -656,8 +702,8 @@ public class GameOne {
                 block.r4.setX(block.r4.getX() + 36);
             } //if
         } catch (ArrayIndexOutOfBoundsException e) {
-              //this happens when the user tries to move when the block is still falling
-              //They should still be able to move without getting an exception.
+            //this happens when the user tries to move when the block is still falling
+            //They should still be able to move without getting an exception.
             return;
         } //catch
     }
