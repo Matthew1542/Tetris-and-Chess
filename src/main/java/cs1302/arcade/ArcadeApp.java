@@ -27,19 +27,26 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.paint.ImagePattern;
 import javafx.util.Duration;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextField;
 
 /**
  * Application subclass for {@code ArcadeApp}.
  * @version 2019.fa
  */
 public class ArcadeApp extends Application {
-    
+
+    VBox vbox;
     String gameState = "MENU";
     Stage stage;
     Rectangle projectName = new Rectangle(1280, 720);
     Rectangle teamName = new Rectangle(1280, 720);
     Rectangle name = new Rectangle(1280, 720);
     Timeline timeline = new Timeline();
+    MenuBar menuBar;
+    Menu menu;
     
     GameOne gameOne;
     GameTwo gameTwo;
@@ -48,15 +55,19 @@ public class ArcadeApp extends Application {
      * This method creates an HBox called menu and returns it into a new scene.
      * @return The next HBox being created.
      */
-    public HBox menu() {
+    public VBox menu() {
         HBox hbox = new HBox();
+	VBox vbox = new VBox();
         Button gameOneButton = new Button();
         Button gameTwoButton = new Button();
         Image imageOne = new Image("file:resources/tetris.png");
         Image imageTwo = new Image("file:resources/chess.png");
+	menuBar = menuMaker(); //helper method 
+	
         gameOneButton.setGraphic(new ImageView(imageOne));
         gameTwoButton.setGraphic(new ImageView(imageTwo));
         hbox.getChildren().addAll(gameOneButton, gameTwoButton);
+	vbox.getChildren().addAll(menuBar, hbox);
         gameOneButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
                 gameState = "GAMEONE";
@@ -69,7 +80,7 @@ public class ArcadeApp extends Application {
                 updateScene();
             }
         });
-        return hbox;
+        return vbox;
     }
     
     /**
@@ -163,6 +174,52 @@ public class ArcadeApp extends Application {
             updateScene(); 
         }
     }
+
+    public MenuBar menuMaker() {	
+	MenuBar menBar = new MenuBar();
+	Menu menu = new Menu("High scores");
+	menBar.getMenus().addAll(menu); //add to bar
+
+	MenuItem tetrisItem = new MenuItem("Tetris");
+	MenuItem chessItem = new MenuItem("Chess");
+
+	tetrisItem.setOnAction(new EventHandler<ActionEvent>() {
+		@Override public void handle(ActionEvent e) {
+		    //Swap stage to tetris scores
+		}
+	    });
+	chessItem.setOnAction(new EventHandler<ActionEvent>() {
+		@Override public void handle(ActionEvent e) {
+		    //Swap stage to chess scene
+		}
+	    });
+	menu.getItems().addAll(tetrisItem, chessItem);
+	return menBar;
+
+    } //menu
+
+    public Scene getScoreScene() {
+	File scoreTetris = new File("resources/scoreTetris.txt");
+	ArrayList<Integer> topScores = new ArrayList<>();
+	ArrayList<String> topInitials = new ArrayList<>();
+	try {
+	    String line = "";
+	    BufferedReader br = new BufferedReader(new FileReader(scoreTetris));
+	    while ((line = br.readLine) != null) {
+		String[] temp = line.split(",");
+		topIntitials.add(temp[0] + "");
+		topScores.add(Integer.parseInt(temp[1]));
+		
+	    } //while
+
+	    br.close(0);
+
+	} catch (FileNotFoundException e) {
+	    System.out.println("ERROR");
+
+	} //catch
+
+    } //getScoreScene
       
     /** {@inheritDoc} */
     @Override
