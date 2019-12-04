@@ -57,17 +57,17 @@ public class ArcadeApp extends Application {
      */
     public VBox menu() {
         HBox hbox = new HBox();
-	VBox vbox = new VBox();
+        VBox vbox = new VBox();
         Button gameOneButton = new Button();
         Button gameTwoButton = new Button();
         Image imageOne = new Image("file:resources/tetris.png");
         Image imageTwo = new Image("file:resources/chess.png");
-	menuBar = menuMaker(); //helper method 
-	
+        menuBar = menuMaker(); //helper method 
+        
         gameOneButton.setGraphic(new ImageView(imageOne));
         gameTwoButton.setGraphic(new ImageView(imageTwo));
         hbox.getChildren().addAll(gameOneButton, gameTwoButton);
-	vbox.getChildren().addAll(menuBar, hbox);
+        vbox.getChildren().addAll(menuBar, hbox);
         gameOneButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
                 gameState = "GAMEONE";
@@ -175,49 +175,49 @@ public class ArcadeApp extends Application {
         }
     }
 
-    public MenuBar menuMaker() {	
-	MenuBar menBar = new MenuBar();
-	Menu menu = new Menu("High scores");
-	menBar.getMenus().addAll(menu); //add to bar
+    public MenuBar menuMaker() {        
+        MenuBar menBar = new MenuBar();
+        Menu menu = new Menu("High scores");
+        menBar.getMenus().addAll(menu); //add to bar
 
-	MenuItem tetrisItem = new MenuItem("Tetris");
-	MenuItem chessItem = new MenuItem("Chess");
+        MenuItem tetrisItem = new MenuItem("Tetris");
+        MenuItem chessItem = new MenuItem("Chess");
 
-	tetrisItem.setOnAction(new EventHandler<ActionEvent>() {
-		@Override public void handle(ActionEvent e) {
-		    //Swap stage to tetris scores
-		}
-	    });
-	chessItem.setOnAction(new EventHandler<ActionEvent>() {
-		@Override public void handle(ActionEvent e) {
-		    //Swap stage to chess scene
-		}
-	    });
-	menu.getItems().addAll(tetrisItem, chessItem);
-	return menBar;
+        tetrisItem.setOnAction(new EventHandler<ActionEvent>() {
+                @Override public void handle(ActionEvent e) {
+                    //Swap stage to tetris scores
+                }
+            });
+        chessItem.setOnAction(new EventHandler<ActionEvent>() {
+                @Override public void handle(ActionEvent e) {
+                    //Swap stage to chess scene
+                }
+            });
+        menu.getItems().addAll(tetrisItem, chessItem);
+        return menBar;
 
     } //menu
 
     public Scene getScoreScene() {
-	File scoreTetris = new File("resources/scoreTetris.txt");
-	ArrayList<Integer> topScores = new ArrayList<>();
-	ArrayList<String> topInitials = new ArrayList<>();
-	try {
-	    String line = "";
-	    BufferedReader br = new BufferedReader(new FileReader(scoreTetris));
-	    while ((line = br.readLine) != null) {
-		String[] temp = line.split(",");
-		topIntitials.add(temp[0] + "");
-		topScores.add(Integer.parseInt(temp[1]));
-		
-	    } //while
+        File scoreTetris = new File("resources/scoreTetris.txt");
+        ArrayList<Integer> topScores = new ArrayList<>();
+        ArrayList<String> topInitials = new ArrayList<>();
+        try {
+            String line = "";
+            BufferedReader br = new BufferedReader(new FileReader(scoreTetris));
+            while ((line = br.readLine) != null) {
+                String[] temp = line.split(",");
+                topIntitials.add(temp[0] + "");
+                topScores.add(Integer.parseInt(temp[1]));
+                
+            } //while
 
-	    br.close(0);
+            br.close(0);
 
-	} catch (FileNotFoundException e) {
-	    System.out.println("ERROR");
+        } catch (FileNotFoundException e) {
+            System.out.println("ERROR");
 
-	} //catch
+        } //catch
 
     } //getScoreScene
       
