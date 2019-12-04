@@ -1,4 +1,4 @@
-# Reflection
+ # Reflection
 
 Add to this file to satisfy the "Reflection Updates" non-functional requirement
 for this project. Please keep this document organized using Markdown. If you
@@ -36,5 +36,19 @@ that the Markdown is transformed into nice looking HTML.
 3. **DONE:** Completed most of the Tetris game apart from final images and textures.
 
 4. **TODO:** Plan to have Chess completed by the next deadline.
+
+5. **PROB:** Having issues with lag for the animation.
+
+
+## TUES 2019-12-3 @ 7:03 PM EST
+1. **DONE:** Made an alpha version of the menu.
+
+2. **DONE:** Made a partially complete extra credit animation.
+
+3. **DONE:** Completed most of the Tetris game apart from final images and textures.
+
+4. **DONE:** Completed Chess completely.
+
+5. **TODO:** Work on the high score extra-credit opportunity and polish the opening animation.
 
 5. **PROB:** Having issues with lag for the animation.
