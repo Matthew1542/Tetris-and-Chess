@@ -109,7 +109,8 @@ public class GameOne {
         timeline = new Timeline();
         Block temp = nextBlock;
         group.getChildren().addAll(temp.r1, temp.r2, temp.r3, temp.r4);
-        keyPressed(temp);
+	group.setOnKeyPressed(keyPressed(temp));
+	    //keyPressed(temp);
         mainBlock = temp;
         nextBlock = makeBlock();
         makeTimeline(1000);
@@ -144,27 +145,25 @@ public class GameOne {
      *
      * @param block the block to be moved
      */
-    private void keyPressed (Block block) {
-        group.setOnKeyPressed(new EventHandler<KeyEvent>() {
-                public void handle(KeyEvent event) {
-                    switch (event.getCode()) {
-                    case LEFT:  // KeyCode.LEFT
-                        moveLeft(block);
-                        break;
-                    case RIGHT: // KeyCode.RIGHT
-                        moveRight(block);
-                        break;
-                    case DOWN:
-                        moveDown(block);
-                        score++;
-                        break;
-                    case UP:
-                        rotateBlock(block);
-                        break;
-                    }
-                }
-            });
-    }
+    private EventHandler<? super KeyEvent> keyPressed (Block block) {
+	return event -> {	    
+	    switch (event.getCode()) {
+	    case LEFT:  // KeyCode.LEFT
+		moveLeft(block);
+		break;
+	    case RIGHT: // KeyCode.RIGHT
+		moveRight(block);
+		break;
+	    case DOWN: // speed up piece
+		moveDown(block);
+		score++;
+		break;
+	    case UP: //rotate
+		rotateBlock(block);
+		break;	    
+	    } //switch
+	}; //event
+    } //keyPressed
 
     int timer = 0;
     boolean playing = true;
@@ -647,7 +646,8 @@ public class GameOne {
 
                 group.getChildren().addAll(temp.r1, temp.r2, temp.r3, temp.r4); //add the block
 
-                keyPressed(temp);
+		group.setOnKeyPressed(keyPressed(temp));
+                //keyPressed(temp); //HERE
             } //if
 
             if (block.r1.getY() + 36 < 720 && block.r2.getY() + 36 < 720 &&
@@ -723,7 +723,7 @@ public class GameOne {
      * @return The block to be created
      */
     public Block makeBlock() {
-        int color = (int) (Math.random() * 7);
+        int color = (int) (Math.random() * 7); //7 total blocks
         String type = "temp";
         Rectangle r1 = new Rectangle(36, 36), r2 = new Rectangle(36, 36),
             r3 = new Rectangle(36, 36), r4 = new Rectangle(36, 36);
