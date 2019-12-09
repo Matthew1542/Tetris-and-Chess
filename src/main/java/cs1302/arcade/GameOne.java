@@ -607,7 +607,7 @@ public class GameOne {
                 return true;
             }
         }
-        return false;
+        return false; //cant rotate
     } //check
 
     /**
@@ -626,7 +626,7 @@ public class GameOne {
                 grid[(int)(block.r4.getX() - 460) / 36][((int)block.r4.getY() / 36) + 1]) {
                 //if you are here, the block has passed the criteria for stopping
 
-                //Fill the spot in the double array, block hit a solid. -> 1 = taken spot
+                //Fill the spot in the double array, block hit a solid. -> true = taken spot
                 grid[(int)(block.r1.getX() - 460) / 36][(int)block.r1.getY() / 36] = true;
                 grid[(int)(block.r2.getX() - 460) / 36][(int)block.r2.getY() / 36] = true;
                 grid[(int)(block.r3.getX() - 460) / 36][(int)block.r3.getY() / 36] = true;
@@ -687,8 +687,8 @@ public class GameOne {
                 block.r4.setX(block.r4.getX() - 36);
             } //if
         } catch (ArrayIndexOutOfBoundsException e) {
-            return;
-        }
+            return; //exit the method
+        } //try-catch
     } //move left
 
     /**
@@ -723,62 +723,176 @@ public class GameOne {
      * @return The block to be created
      */
     public Block makeBlock() {
-        int color = (int) (Math.random() * 7); //7 total blocks
-        String type = "temp";
-        Rectangle r1 = new Rectangle(36, 36), r2 = new Rectangle(36, 36),
-            r3 = new Rectangle(36, 36), r4 = new Rectangle(36, 36);
-        if (color == 0) { //the color cyan block will be made
-            r1.setX(568);
-            r2.setX(604);
-            r3.setX(640);
-            r4.setX(676);
-            type = "cyan";
+	int color = (int)(Math.random() * 7); //7 total blocks
+	Block theBlock = new Block();
+	
+        if (color == 0) { //the color cyan block will be made	    
+	    theBlock = setCyan();
+	    
         } else if (color == 1) { //blue
-            r1.setX(604);
-            r1.setY(0 - 36);
-            r2.setX(604);
-            r3.setX(640);
-            r4.setX(676);
-            type = "blue";
-        } else if (color == 2) { //oragne
-            r1.setX(604);
-            r2.setX(640);
-            r3.setX(676);
-            r4.setX(676);
-            r4.setY(0 - 36);
-            type = "orange";
+	    theBlock = setBlue();
+	    
+        } else if (color == 2) { //orange
+	    theBlock = setOrange();
+	    
         } else if (color == 3) { //yellow
-            r1.setX(604);
-            r1.setY(0 - 36);
-            r2.setX(640);
-            r2.setY(0 - 36);
-            r3.setX(604);
-            r4.setX(640);
-            type = "yellow";
+	    theBlock = setYellow();
+         
         }  else if (color == 4) { //green
-            r1.setX(604);
-            r2.setX(640);
-            r3.setX(640);
-            r3.setY(0 - 36);
-            r4.setX(676);
-            r4.setY(0 - 36);
-            type = "green";
+	    theBlock = setGreen();
+	    
         } else if (color == 5) { //purple
-            r1.setX(604);
-            r2.setX(640);
-            r2.setY(0 - 36);
-            r3.setX(640);
-            r4.setX(676);
-            type = "purple";
+	    theBlock = setPurple();
+	    
         } else if (color == 6) { //red
-            r1.setX(604);
-            r1.setY(0 - 36);
-            r2.setX(640);
-            r2.setY(0 - 36);
-            r3.setX(640);
-            r4.setX(676);
-            type = "red";
+	    theBlock = setRed();
+	    
         } //else if
-        return new Block(r1, r2, r3, r4, type);
+	
+        return theBlock; //return the block to fall
+	
     } //makeBlock
+
+    /**
+     * Helper method to create a cyan block.
+     *
+     * @retrun The cyan colored block
+     */
+    public Block setCyan() {
+	Rectangle r1 = new Rectangle(36, 36); //make the 4 blocks
+	Rectangle r2 = new Rectangle(36, 36);
+        Rectangle r3 = new Rectangle(36, 36);
+	Rectangle r4 = new Rectangle(36, 36);
+	Block b = new Block(r1, r2, r3, r4, "cyan"); //type cyan
+
+	//move the blocks into the correct spot
+	b.r1.setX(568);
+	b.r2.setX(604);
+	b.r3.setX(640);
+	b.r4.setX(676);
+	return b;
+    } //setCyan
+
+    /** 
+     * Helper method to create a blue block.
+     *
+     * @retrun The blue colored block
+     */
+    public Block setBlue() {
+        Rectangle r1 = new Rectangle(36, 36);
+        Rectangle r2 = new Rectangle(36, 36);
+        Rectangle r3 = new Rectangle(36, 36);
+        Rectangle r4 = new Rectangle(36, 36);
+        Block b = new Block(r1, r2, r3, r4, "blue");
+
+	b.r1.setX(604);
+	b.r1.setY(0 - 36);
+	b.r2.setX(604);
+	b.r3.setX(640);
+	b.r4.setX(676);
+	return b;
+    } //set blue
+
+    /** 
+     * Helper method to create a orange block.
+     *
+     * @retrun The orange colored block
+     */
+    public Block setOrange() {
+        Rectangle r1 = new Rectangle(36, 36);
+        Rectangle r2 = new Rectangle(36, 36);
+        Rectangle r3 = new Rectangle(36, 36);
+        Rectangle r4 = new Rectangle(36, 36);
+        Block b = new Block(r1, r2, r3, r4, "orange");
+
+	b.r1.setX(604);
+	b.r2.setX(640);
+	b.r3.setX(676);
+	b.r4.setX(676);
+	b.r4.setY(0 - 36);
+	return b;
+    } //setOrange
+
+    /** 
+     * Helper method to create a yellow block.
+     *
+     * @retrun The yellow colored block
+     */
+    public Block setYellow() {
+        Rectangle r1 = new Rectangle(36, 36);
+        Rectangle r2 = new Rectangle(36, 36);
+        Rectangle r3 = new Rectangle(36, 36);
+        Rectangle r4 = new Rectangle(36, 36);
+        Block b = new Block(r1, r2, r3, r4, "yellow");
+
+	b.r1.setX(604);
+	b.r1.setY(0 - 36);
+	b.r2.setX(640);
+	b.r2.setY(0 - 36);
+	b.r3.setX(604);
+	b.r4.setX(640);
+	return b;
+    } //set yellow
+
+    /** 
+     * Helper method to create a green block.
+     *
+     * @retrun The green colored block
+     */
+    public Block setGreen() {
+        Rectangle r1 = new Rectangle(36, 36);
+        Rectangle r2 = new Rectangle(36, 36);
+        Rectangle r3 = new Rectangle(36, 36);
+        Rectangle r4 = new Rectangle(36, 36);
+        Block b = new Block(r1, r2, r3, r4, "green");
+
+        b.r1.setX(604);
+        b.r2.setX(640);
+        b.r3.setX(640);
+        b.r3.setY(0 - 36);
+        b.r4.setX(676);
+        b.r4.setY(0 - 36);
+        return b;
+    } //setGreen
+
+    /** 
+     * Helper method to create a purple block.
+     *
+     * @retrun The purple colored block
+     */
+    public Block setPurple() {
+        Rectangle r1 = new Rectangle(36, 36);
+        Rectangle r2 = new Rectangle(36, 36);
+        Rectangle r3 = new Rectangle(36, 36);
+        Rectangle r4 = new Rectangle(36, 36);
+        Block b = new Block(r1, r2, r3, r4, "purple");
+
+        b.r1.setX(604);
+        b.r2.setX(640);
+        b.r2.setY(0 - 36);
+        b.r3.setX(640);
+        b.r4.setX(676);
+        return b;
+    } //setPurple
+
+    /** 
+     * Helper method to create a red block.
+     *
+     * @retrun The red colored block
+     */
+    public Block setRed() {
+        Rectangle r1 = new Rectangle(36, 36);
+        Rectangle r2 = new Rectangle(36, 36);
+        Rectangle r3 = new Rectangle(36, 36);
+        Rectangle r4 = new Rectangle(36, 36);
+        Block b = new Block(r1, r2, r3, r4, "red");
+
+        b.r1.setX(604);
+        b.r1.setY(0 - 36);
+        b.r2.setX(640);
+        b.r2.setY(0 - 36);
+        b.r3.setX(640);
+        b.r4.setX(676);
+        return b;
+    } //setRed
 }

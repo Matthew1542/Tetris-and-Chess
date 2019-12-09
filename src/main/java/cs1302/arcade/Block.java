@@ -21,6 +21,14 @@ public class Block {
     ImagePattern png;
 
     /**
+     * Constructor for no param arguments.
+     *
+     */
+    public Block() {
+	type = "cyan";
+    } //constructor
+
+    /**
      * Constructor to make a new block.
      *
      * @param r1 the left most square
