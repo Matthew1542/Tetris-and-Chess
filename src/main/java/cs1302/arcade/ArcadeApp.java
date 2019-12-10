@@ -50,7 +50,7 @@ import javafx.scene.text.Text;
 public class ArcadeApp extends Application {
 
     VBox vbox;
-    String gameState = "MENU";
+    String gameState = "ANIMATION";
     Stage stage;
     Rectangle projectName = new Rectangle(1280, 720);
     Rectangle teamName = new Rectangle(1280, 720);

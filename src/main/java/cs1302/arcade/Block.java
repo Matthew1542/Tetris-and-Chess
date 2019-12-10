@@ -7,17 +7,18 @@ import javafx.scene.paint.ImagePattern;
 
 /**
  * The class that creates a block.
+ * The blocks are composed of 4 rectangles.
  *
  */ 
 public class Block {
 
-    Rectangle r1;
-    Rectangle r2;
-    Rectangle r3;
-    Rectangle r4;
+    Rectangle r1; //1st square
+    Rectangle r2; //2nd
+    Rectangle r3; //3rd
+    Rectangle r4; //4th
 
     String type; //type of block
-    int rotation = 1;
+    int rotation = 1; //keeping track of how the block looks
     ImagePattern png;
 
     /**
@@ -25,7 +26,7 @@ public class Block {
      *
      */
     public Block() {
-	type = "cyan";
+        type = "cyan";
     } //constructor
 
     /**
