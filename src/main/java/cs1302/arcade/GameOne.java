@@ -80,7 +80,7 @@ public class GameOne {
         scene = new Scene(group, 1280, 720);
         for (int i = 0; i < 10; i++) {
             for (int x = 0; x < 20; x++) {
-                grid[i][x] = false; //fill grid with 0's
+                grid[i][x] = false; //fill grid with falses
             } //for
         } //for
 
@@ -109,8 +109,7 @@ public class GameOne {
         timeline = new Timeline();
         Block temp = nextBlock;
         group.getChildren().addAll(temp.r1, temp.r2, temp.r3, temp.r4);
-	group.setOnKeyPressed(keyPressed(temp));
-	    //keyPressed(temp);
+        group.setOnKeyPressed(keyPressed(temp));
         mainBlock = temp;
         nextBlock = makeBlock();
         makeTimeline(1000);
@@ -146,23 +145,23 @@ public class GameOne {
      * @param block the block to be moved
      */
     private EventHandler<? super KeyEvent> keyPressed (Block block) {
-	return event -> {	    
-	    switch (event.getCode()) {
-	    case LEFT:  // KeyCode.LEFT
-		moveLeft(block);
-		break;
-	    case RIGHT: // KeyCode.RIGHT
-		moveRight(block);
-		break;
-	    case DOWN: // speed up piece
-		moveDown(block);
-		score++;
-		break;
-	    case UP: //rotate
-		rotateBlock(block);
-		break;	    
-	    } //switch
-	}; //event
+        return event -> {           
+            switch (event.getCode()) {
+            case LEFT:  // KeyCode.LEFT
+                moveLeft(block);
+                break;
+            case RIGHT: // KeyCode.RIGHT
+                moveRight(block);
+                break;
+            case DOWN: // speed up piece
+                moveDown(block);
+                score++;
+                break;
+            case UP: //rotate
+                rotateBlock(block);
+                break;      
+            } //switch
+        }; //event
     } //keyPressed
 
     int timer = 0;
@@ -284,37 +283,41 @@ public class GameOne {
      * This method removes full rows in the tetris game.
      */
     private void removeRows() {
+        int lineCount = 0; //goes up one for each full spot
         ArrayList<Integer> linesToRemove = new ArrayList<Integer>();
         ArrayList<Rectangle> rectangles = new ArrayList<Rectangle>();
         ArrayList<Rectangle> rectanglesMove = new ArrayList<Rectangle>();
-        int lineCount = 0;
+        
         for (int i = 0; i < 20; i++) {
             for (int j = 0; j < 10; j++) {
                 if (grid[j][i]) {
+                    //if you are here, this spot on this line is true/full
                     lineCount++;
-                }
+                } //if
             }
             if (lineCount == 10) {
-                linesToRemove.add(i);
-            }
-            lineCount = 0;
+                //if you are here, EVERY spot on the line is full
+                linesToRemove.add(i); //queued for removal
+            } //if
+            lineCount = 0; //reset counter
         }
         for (Node rects: group.getChildren()) { //accessing the children of group
             if (rects instanceof Rectangle) {
-                rectangles.add((Rectangle)rects);
+                rectangles.add((Rectangle)rects); //add to list
             }
         }
         while (linesToRemove.size() > 0) {
-            score += 100;
+            //loop while there are still lines to be removed
+            score += 100; //add to score
             for (int i = 0; i < rectangles.size(); i++) {
                 if (rectangles.get(i).getY() == linesToRemove.get(0) * 36) {
                     Rectangle r = rectangles.get(i);
                     grid[(int)((r.getX() - 460) / 36)][(int)(r.getY() / 36)] = false;
-                    group.getChildren().remove(rectangles.get(i));
+                    group.getChildren().remove(rectangles.get(i)); //remove the rectangle
                 } else {
                     if (rectangles.get(i).getY() < linesToRemove.get(0) * 36) {
                         rectanglesMove.add(rectangles.get(i));
-                    }
+                    } //if
                 }
             }
             for (int i = 0; i < rectanglesMove.size(); i++) {
@@ -330,15 +333,15 @@ public class GameOne {
                 if (rects instanceof Rectangle) {
                     rectangles.add((Rectangle)rects);
                 }
-            }
+            } //for
             for (int i = 0; i < rectangles.size(); i++) {
                 try {
                     Rectangle r = rectangles.get(i);
                     grid[(int)((r.getX() - 460) / 36)][(int)(r.getY() / 36)] = true;
                 } catch (IndexOutOfBoundsException e) {
                     System.out.print("");
-                }
-            }
+                } //try-catch
+            } //for
             rectanglesMove.clear();
         }
     } //removeRows
@@ -646,8 +649,7 @@ public class GameOne {
 
                 group.getChildren().addAll(temp.r1, temp.r2, temp.r3, temp.r4); //add the block
 
-		group.setOnKeyPressed(keyPressed(temp));
-                //keyPressed(temp); //HERE
+                group.setOnKeyPressed(keyPressed(temp));
             } //if
 
             if (block.r1.getY() + 36 < 720 && block.r2.getY() + 36 < 720 &&
@@ -723,34 +725,34 @@ public class GameOne {
      * @return The block to be created
      */
     public Block makeBlock() {
-	int color = (int)(Math.random() * 7); //7 total blocks
-	Block theBlock = new Block();
-	
-        if (color == 0) { //the color cyan block will be made	    
-	    theBlock = setCyan();
-	    
+        int color = (int)(Math.random() * 7); //7 total blocks
+        Block theBlock = new Block();
+        
+        if (color == 0) { //the color cyan block will be made       
+            theBlock = setCyan();
+            
         } else if (color == 1) { //blue
-	    theBlock = setBlue();
-	    
+            theBlock = setBlue();
+            
         } else if (color == 2) { //orange
-	    theBlock = setOrange();
-	    
+            theBlock = setOrange();
+            
         } else if (color == 3) { //yellow
-	    theBlock = setYellow();
+            theBlock = setYellow();
          
         }  else if (color == 4) { //green
-	    theBlock = setGreen();
-	    
+            theBlock = setGreen();
+            
         } else if (color == 5) { //purple
-	    theBlock = setPurple();
-	    
+            theBlock = setPurple();
+            
         } else if (color == 6) { //red
-	    theBlock = setRed();
-	    
+            theBlock = setRed();
+            
         } //else if
-	
+        
         return theBlock; //return the block to fall
-	
+        
     } //makeBlock
 
     /**
@@ -759,18 +761,18 @@ public class GameOne {
      * @retrun The cyan colored block
      */
     public Block setCyan() {
-	Rectangle r1 = new Rectangle(36, 36); //make the 4 blocks
-	Rectangle r2 = new Rectangle(36, 36);
+        Rectangle r1 = new Rectangle(36, 36); //make the 4 blocks
+        Rectangle r2 = new Rectangle(36, 36);
         Rectangle r3 = new Rectangle(36, 36);
-	Rectangle r4 = new Rectangle(36, 36);
-	Block b = new Block(r1, r2, r3, r4, "cyan"); //type cyan
+        Rectangle r4 = new Rectangle(36, 36);
+        Block b = new Block(r1, r2, r3, r4, "cyan"); //type cyan
 
-	//move the blocks into the correct spot
-	b.r1.setX(568);
-	b.r2.setX(604);
-	b.r3.setX(640);
-	b.r4.setX(676);
-	return b;
+        //move the blocks into the correct spot
+        b.r1.setX(568);
+        b.r2.setX(604);
+        b.r3.setX(640);
+        b.r4.setX(676);
+        return b;
     } //setCyan
 
     /** 
@@ -785,12 +787,12 @@ public class GameOne {
         Rectangle r4 = new Rectangle(36, 36);
         Block b = new Block(r1, r2, r3, r4, "blue");
 
-	b.r1.setX(604);
-	b.r1.setY(0 - 36);
-	b.r2.setX(604);
-	b.r3.setX(640);
-	b.r4.setX(676);
-	return b;
+        b.r1.setX(604);
+        b.r1.setY(0 - 36);
+        b.r2.setX(604);
+        b.r3.setX(640);
+        b.r4.setX(676);
+        return b;
     } //set blue
 
     /** 
@@ -805,12 +807,12 @@ public class GameOne {
         Rectangle r4 = new Rectangle(36, 36);
         Block b = new Block(r1, r2, r3, r4, "orange");
 
-	b.r1.setX(604);
-	b.r2.setX(640);
-	b.r3.setX(676);
-	b.r4.setX(676);
-	b.r4.setY(0 - 36);
-	return b;
+        b.r1.setX(604);
+        b.r2.setX(640);
+        b.r3.setX(676);
+        b.r4.setX(676);
+        b.r4.setY(0 - 36);
+        return b;
     } //setOrange
 
     /** 
@@ -825,13 +827,13 @@ public class GameOne {
         Rectangle r4 = new Rectangle(36, 36);
         Block b = new Block(r1, r2, r3, r4, "yellow");
 
-	b.r1.setX(604);
-	b.r1.setY(0 - 36);
-	b.r2.setX(640);
-	b.r2.setY(0 - 36);
-	b.r3.setX(604);
-	b.r4.setX(640);
-	return b;
+        b.r1.setX(604);
+        b.r1.setY(0 - 36);
+        b.r2.setX(640);
+        b.r2.setY(0 - 36);
+        b.r3.setX(604);
+        b.r4.setX(640);
+        return b;
     } //set yellow
 
     /** 

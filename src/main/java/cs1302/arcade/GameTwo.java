@@ -169,8 +169,8 @@ public class GameTwo {
      */
     public void scoreUpdate(int score, String initials) {
         scoreChess = new File("resources/scoreChess.txt");
-        ArrayList<Integer> topScores = new ArrayList<Integer>();
-        ArrayList<String> topInitials = new ArrayList<String>();
+        ArrayList<Integer> topScores = new ArrayList<Integer>(); //list for scores
+        ArrayList<String> topInitials = new ArrayList<String>(); //list for name
         try {
             String line = "";
             BufferedReader br = new BufferedReader(new FileReader(scoreChess));
@@ -347,8 +347,8 @@ public class GameTwo {
      *
      */
     public void pieceMoved() {
-        if (turn) {
-            turn = false;
+        if (turn) { //if turn is true/white's
+            turn = false; //swap
         } else {
             turn = true;
         }
@@ -388,16 +388,16 @@ public class GameTwo {
      */
     public void showGreen() {
         for (int i = 0; i < possible.size(); i++) {
-            Rectangle r = new Rectangle(90, 90);
-            r.setFill(new ImagePattern(posRoute));
+            Rectangle r = new Rectangle(90, 90); 
+            r.setFill(new ImagePattern(posRoute)); //fill with green
             r.setX(possible.get(i)[0] * 90 + 280);
             r.setY(possible.get(i)[1] * 90);
-            pos.add(r);
+            pos.add(r); //could have multiple possible spots
         }
         for (int i = 0; i < pos.size(); i++) {
             group.getChildren().add(pos.get(i));
         }
-    }
+    } //showGreen
     
     /**
      * Helper method to check if the spot at x or
@@ -409,9 +409,11 @@ public class GameTwo {
      */    
     public boolean checkMove(int x, int y) {
         if (x > 7 || x < 0) {
+            //off board
             return false;
         }
         if (y > 7 || y < 0) {
+            //off board
             return false;
         }
         return true;
@@ -433,12 +435,12 @@ public class GameTwo {
         if (p.type.contains("P")) {
             if (color == 1) {
                 if (yY == 0) {
-                    p.type = "wQ";
-                    p.setImage("wQ");
+                    p.type = "wQ"; //turn pawn to queen
+                    p.setImage("wQ"); //change pictures
                 }
             } else {
                 if (yY == 7) {
-                    p.type = "bQ";
+                    p.type = "bQ"; //change to queen
                     p.setImage("bQ");
                 } 
             }
