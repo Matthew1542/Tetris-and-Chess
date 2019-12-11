@@ -72,8 +72,8 @@ public class GameOne {
     
     int score = 0; //the score of the game
     int level = 0;
-    Block mainBlock = makeBlock();
-    Block nextBlock = makeBlock();
+    Block mainBlock = makeBlock(); //block that is controlled
+    Block nextBlock = makeBlock(); //next block to be controlled
     Group group = new Group();
     Scene scene;
     Text scoreText;
@@ -182,16 +182,18 @@ public class GameOne {
 
     /**
      * Helper method to make set up blocks and make them fall.
+     * Also checks if the row is full of Rectangels
      *
      */
     private void setUpBlocks() {
+        mainBlock = makeBlock(); //block to be controlled
         
         group.getChildren().addAll(mainBlock.r1, mainBlock.r2, mainBlock.r3, mainBlock.r4);
         //add the block to the group to make it visible
         
         group.setOnKeyPressed(keyPressed(mainBlock)); //call back the method returning a key-event
         nextBlock = makeBlock();//go ahead and create the next block to fall
-
+        
         group.requestFocus(); //request focus for the group
     }
 
@@ -315,7 +317,7 @@ public class GameOne {
      * This method removes full rows in the tetris game.
      *
      */
-    private void removeRows() {
+    private void clearRows() {
         
         int size = group.getChildren().size(); //number of children in group
 
@@ -330,6 +332,7 @@ public class GameOne {
 
         while (this.linesToRemove.size() >= 1) {
             //loop while there are still lines to be removed
+            score += 100; //add to score for every cut line
             cutLine(); //helper method to cut the lines and drop other rectangles
         } //while
         
@@ -604,7 +607,7 @@ public class GameOne {
 
     /**
      * The method that causes the block to fall down by its 36,
-     * every 10 seconds.
+     * every 10 seconds. Also checks if a row is full
      *
      * @param block The block to fall down
      */
@@ -629,6 +632,7 @@ public class GameOne {
                 this.rectangles = new ArrayList<Rectangle>();
                 this.rectanglesMove = new ArrayList<Rectangle>();
 
+                
                 int lineCount = 0; //goes up one for each full spot
                 for (int i = 0; i < 20; i++) {
                     int sLine = i; //the specific line that is to be removed   
@@ -637,29 +641,24 @@ public class GameOne {
                         if (grid[x][i]) {
                             //if you are here, this spot is full 
                             lineCount++; //add 1 for every full spot
-                        } //if 
-                    }
-                    if (lineCount > 9) {
-                        //if you are here, EVERY spot on the line is full    
-                        this.linesToRemove.add(sLine); //queued for removal           
-                    } //if 
+                        } //if
+                        if (lineCount > 9) {
+                            this.linesToRemove.add(sLine);
+                        } //if
+                    } //for
                     lineCount = 0; //reset counter      
                 }
-                if (linesToRemove.size() > 0) { //check if rows need to be removed
-                    removeRows();
-                } //if        
+                if (linesToRemove.size() > 0) { //check if rows need to be deleted
+                    clearRows();
+                } //if
+                
+                setUpBlocks();
                 for (int i = 0; i < 10; i++) {
                     if (grid[i][0]) {
                         playing = false;
                     } //if
                 } //for
 
-                mainBlock = nextBlock; //now user is done with the old block
-                nextBlock = makeBlock(); //make new one already
-
-                group.getChildren().addAll(mainBlock.r1, mainBlock.r2, mainBlock.r3, mainBlock.r4);
-
-                group.setOnKeyPressed(keyPressed(mainBlock)); //can be moved
             } //if
 
             keepFalling(block); //method to check if falling should continue
@@ -971,7 +970,6 @@ public class GameOne {
      */
     private void cutLine() {
         
-        score += 100; //add to score for every cut line
         for (int i = 0; i < this.rectangles.size(); i++) {
             if (this.rectangles.get(i).getY() == this.linesToRemove.get(0) * 36) {
                 Rectangle rec = this.rectangles.get(i);
