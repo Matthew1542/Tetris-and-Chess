@@ -277,6 +277,7 @@ public class GameOne {
      * @return The initials input by the user.
      */
     public String getInitials() {
+       
         TextInputDialog dialog = new TextInputDialog("");
         String initials = "";
         dialog.setTitle("Initial Input");
@@ -291,29 +292,37 @@ public class GameOne {
     
     /**
      * This method removes full rows in the tetris game.
+     *
      */
     private void removeRows() {
         int lineCount = 0; //goes up one for each full spot
         
         for (int i = 0; i < 20; i++) {
+            int sLine = i; //the specific line that is to be removed
             for (int x = 0; x < 10; x++) {
                 //2 loops to go through entire 2D array
                 if (grid[x][i]) {
                     //if you are here, this spot is full
-                    lineCount += 1; //add 1 for every full spot
+                    lineCount++; //add 1 for every full spot
                 } //if
             }
-            if (lineCount == 10) {
+            if (lineCount > 9) {
                 //if you are here, EVERY spot on the line is full
-                this.linesToRemove.add(i); //queued for removal
+                this.linesToRemove.add(sLine); //queued for removal
             } //if
             lineCount = 0; //reset counter
         }
-        for (Node rects: group.getChildren()) { //accessing the children of group
-            if (rects instanceof Rectangle) {
-                this.rectangles.add((Rectangle)rects); //add to list
+        int size = group.getChildren().size(); //number of children in group
+
+        for (int i = 0; i < size; i++) {
+            //transverse through the group
+            Node node = group.getChildren().get(i); 
+            if (node instanceof Rectangle) { //check if node = rectangle
+                //the node needs to be added to the list
+                this.rectangles.add((Rectangle)node); //add to list 
             } //if
         } //for
+
         cutLines(); //helper method to cut the lines and drop other rectangles
 
     } //removeRows
@@ -892,24 +901,25 @@ public class GameOne {
      */
     private void cutLines() {
         
-        while (this.linesToRemove.size() > 0) {
+        while (this.linesToRemove.size() >= 1) {
             //loop while there are still lines to be removed
             score += 100; //add to score            
             for (int i = 0; i < this.rectangles.size(); i++) {
                 if (this.rectangles.get(i).getY() == this.linesToRemove.get(0) * 36) {
-                    Rectangle r = this.rectangles.get(i);
-                    grid[(int)((r.getX() - 460) / 36)][(int)(r.getY() / 36)] = false;
-                    group.getChildren().remove(this.rectangles.get(i)); //remove the rectangle
+                    Rectangle rec = this.rectangles.get(i);
+                    grid[(int)((rec.getX() - 460) / 36)][(int)(rec.getY() / 36)] = false;
+                    group.getChildren().remove(rec); //remove the rectangle
                 } else {
-                    if (this.rectangles.get(i).getY() < this.linesToRemove.get(0) * 36) {
-                        this.rectanglesMove.add(this.rectangles.get(i));
+                    Rectangle rec = this.rectangles.get(i);
+                    if (rec.getY() < this.linesToRemove.get(0) * 36) {
+                        this.rectanglesMove.add(rec);
                     } //if
-                }
+                } //else
             }
             for (int i = 0; i < this.rectanglesMove.size(); i++) {
-                Rectangle r = this.rectanglesMove.get(i);
-                grid[(int)((r.getX() - 460) / 36)][(int)(r.getY() / 36)] = false;
-                grid[(int)((r.getX() - 460) / 36)][(int)((r.getY() + 36) / 36)] = true;
+                Rectangle rec = this.rectanglesMove.get(i);
+                grid[(int)((rec.getX() - 460) / 36)][(int)(rec.getY() / 36)] = false;
+                grid[(int)((rec.getX() - 460) / 36)][(int)((rec.getY() + 36) / 36)] = true;
                 this.rectanglesMove.get(i).setY(this.rectanglesMove.get(i).getY() + 36);
           
             }
@@ -917,20 +927,26 @@ public class GameOne {
 
             this.rectangles = new ArrayList<Rectangle>(); //empty the list
             this.rectanglesMove = new ArrayList<Rectangle>(); //empty
-            for (Node rects: group.getChildren()) { //accessing the children of group            
-                if (rects instanceof Rectangle) {
-                    this.rectangles.add((Rectangle)rects); //cast to Rectangle
-                }
-            } //for
+
+            int size = group.getChildren().size();          
+            for (int i = 0; i < size; i++) {
+                //transverse through the group
+                Node node = group.getChildren().get(i);
+                if (node instanceof Rectangle) {
+                    //the node needs to be added to the list
+                    this.rectangles.add((Rectangle)node); //add to list
+                } //if
+            } //for 
+
             for (int i = 0; i < this.rectangles.size(); i++) {
                 try {
-                    Rectangle r = this.rectangles.get(i);
-                    grid[(int)((r.getX() - 460) / 36)][(int)(r.getY() / 36)] = true;
+                    Rectangle rec = this.rectangles.get(i);
+                    grid[(int)((rec.getX() - 460) / 36)][(int)(rec.getY() / 36)] = true;
                 } catch (IndexOutOfBoundsException e) {
                     System.out.print("");
                 } //try-catch
             } //for 
-            this.rectanglesMove.clear();
+            this.rectanglesMove = new ArrayList<Rectangle>();
         } //while  
         
     } //cutLines
