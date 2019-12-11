@@ -42,6 +42,8 @@ import java.io.FileReader;
 import java.io.FileNotFoundException;
 import java.io.File;
 import javafx.scene.text.Text;
+import javafx.scene.control.ToolBar;
+
 
 /**
  * Application subclass for {@code ArcadeApp}.
@@ -50,15 +52,15 @@ import javafx.scene.text.Text;
 public class ArcadeApp extends Application {
 
     VBox vbox;
-    String gameState = "MENU";
+    String gameState = "ANIMATION";
     Stage stage;
     Rectangle projectName = new Rectangle(1280, 720);
     Rectangle teamName = new Rectangle(1280, 720);
     Rectangle name = new Rectangle(1280, 720);
     Timeline timeline = new Timeline();
-    MenuBar menuBar = menuMaker(); //helper method 
     GameOne gameOne;
-    GameTwo gameTwo; 
+    GameTwo gameTwo;
+    ToolBar tBar = tBarMaker();
 
     /**
      * This method creates an HBox called menu and returns it into a new scene.
@@ -71,12 +73,11 @@ public class ArcadeApp extends Application {
         Button gameTwoButton = new Button();
         Image imageOne = new Image("file:resources/tetris.png");
         Image imageTwo = new Image("file:resources/chess.png");
-        //        menuBar = menuMaker(); //helper method 
         
         gameOneButton.setGraphic(new ImageView(imageOne));
         gameTwoButton.setGraphic(new ImageView(imageTwo));
         hbox.getChildren().addAll(gameOneButton, gameTwoButton);
-        vbox.getChildren().addAll(menuBar, hbox);
+        vbox.getChildren().addAll(tBar, hbox);
         gameOneButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override public void handle(ActionEvent e) {
                 gameState = "GAMEONE";
@@ -184,6 +185,31 @@ public class ArcadeApp extends Application {
     }
 
     /**
+     * Helper method to create a toolBar.
+     *
+     * @return The created toolBar to be added to the scene
+     */
+    public ToolBar tBarMaker() {
+        ToolBar tBar = new ToolBar();
+        Button tetrisScore = new Button("Tetris High Scores");
+        Button chessScore = new Button("Chess High Scores");
+        tetrisScore.setOnAction(new EventHandler<ActionEvent>() {
+                @Override public void handle(ActionEvent e) {
+                    getScoreScene(1);
+                }
+            });
+
+        chessScore.setOnAction(new EventHandler<ActionEvent>() {
+                @Override public void handle(ActionEvent e) {
+                    getScoreScene(2);
+                }
+            });
+        tBar.getItems().addAll(tetrisScore, chessScore);
+        return tBar;
+
+    } //tBar
+
+    /**
      * Makes a menu bar and adds it to the scene.
      *
      * @return The created menu bar to be added to the scene.
@@ -283,7 +309,6 @@ public class ArcadeApp extends Application {
     /** {@inheritDoc} */
     @Override
     public void start(Stage stage) {
-        MenuBar m = new MenuBar();
         this.stage = stage;      
         stage.setTitle("cs1302-arcade!");
         updateScene();
