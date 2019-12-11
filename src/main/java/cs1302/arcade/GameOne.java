@@ -44,6 +44,8 @@ import java.io.FileNotFoundException;
 import java.io.UnsupportedEncodingException;
 import javafx.scene.control.TextInputDialog;
 import java.util.Optional;
+import java.util.Arrays;
+
 
 /**
  * This class is a javaFX made game of tetris.
@@ -60,6 +62,7 @@ public class GameOne {
     //Lists involved when a row is full and must be removed
     /** List to hold all of the lines that are to be removed. */ 
     ArrayList<Integer> linesToRemove = new ArrayList<>();
+    int[] linesToRem = new int[0];
 
     /** List to hold all of the rectangles to be removed. */
     ArrayList<Rectangle> rectangles = new ArrayList<>();
@@ -69,7 +72,7 @@ public class GameOne {
     
     int score = 0; //the score of the game
     int level = 0;
-    Block mainBlock;
+    Block mainBlock = makeBlock();
     Block nextBlock = makeBlock();
     Group group = new Group();
     Scene scene;
@@ -120,14 +123,12 @@ public class GameOne {
         } catch (NullPointerException npe) {
             System.out.println("error");
         } //
-        timeline = new Timeline();
-        Block temp = nextBlock;
-        group.getChildren().addAll(temp.r1, temp.r2, temp.r3, temp.r4);
-        group.setOnKeyPressed(keyPressed(temp));
-        mainBlock = temp;
-        nextBlock = makeBlock();
-        makeTimeline(1000);
-        group.requestFocus();
+        timeline = new Timeline(); //create timeline
+        
+        setUpBlocks(); //call helper method
+
+        makeTimeline(1000); //start timeline
+
     } //main/constructor
 
     /**
@@ -178,6 +179,21 @@ public class GameOne {
             } //switch
         }; //event
     } //keyPressed
+
+    /**
+     * Helper method to make set up blocks and make them fall.
+     *
+     */
+    private void setUpBlocks() {
+        
+        group.getChildren().addAll(mainBlock.r1, mainBlock.r2, mainBlock.r3, mainBlock.r4);
+        //add the block to the group to make it visible
+        
+        group.setOnKeyPressed(keyPressed(mainBlock)); //call back the method returning a key-event
+        nextBlock = makeBlock();//go ahead and create the next block to fall
+
+        group.requestFocus(); //request focus for the group
+    }
 
     int timer = 0;
     boolean playing = true;
@@ -281,7 +297,7 @@ public class GameOne {
      *
      * @return The initials input by the user.
      */
-    public String getInitials() throws NullPointerException {
+    public String getInitials() {
        
         TextInputDialog dialog = new TextInputDialog("");
         String initials = "";
@@ -300,23 +316,7 @@ public class GameOne {
      *
      */
     private void removeRows() {
-        int lineCount = 0; //goes up one for each full spot
         
-        for (int i = 0; i < 20; i++) {
-            int sLine = i; //the specific line that is to be removed
-            for (int x = 0; x < 10; x++) {
-                //2 loops to go through entire 2D array
-                if (grid[x][i]) {
-                    //if you are here, this spot is full
-                    lineCount++; //add 1 for every full spot
-                } //if
-            }
-            if (lineCount > 9) {
-                //if you are here, EVERY spot on the line is full
-                this.linesToRemove.add(sLine); //queued for removal
-            } //if
-            lineCount = 0; //reset counter
-        }
         int size = group.getChildren().size(); //number of children in group
 
         for (int i = 0; i < size; i++) {
@@ -328,8 +328,11 @@ public class GameOne {
             } //if
         } //for
 
-        cutLines(); //helper method to cut the lines and drop other rectangles
-
+        while (this.linesToRemove.size() >= 1) {
+            //loop while there are still lines to be removed
+            cutLine(); //helper method to cut the lines and drop other rectangles
+        } //while
+        
     } //removeRows
 
     /**
@@ -614,6 +617,7 @@ public class GameOne {
                 grid[(int)(block.r3.getX() - 460) / 36][((int)block.r3.getY() / 36) + 1] ||
                 grid[(int)(block.r4.getX() - 460) / 36][((int)block.r4.getY() / 36) + 1]) {
                 //if you are here, the block has passed the criteria for stopping
+                score += 40; //move up score by 40 
 
                 //Fill the spot in the double array, block hit a solid. -> true = taken spot
                 grid[(int)(block.r1.getX() - 460) / 36][(int)block.r1.getY() / 36] = true;
@@ -621,25 +625,41 @@ public class GameOne {
                 grid[(int)(block.r3.getX() - 460) / 36][(int)block.r3.getY() / 36] = true;
                 grid[(int)(block.r4.getX() - 460) / 36][(int)block.r4.getY() / 36] = true;
 
-                score += 40; //move up score by 40
-                this.linesToRemove = new ArrayList<Integer>();
+                this.linesToRemove = new ArrayList<Integer>(); //make sure lists are new to check
                 this.rectangles = new ArrayList<Rectangle>();
                 this.rectanglesMove = new ArrayList<Rectangle>();
-        
-                removeRows(); //helper method to clear rows     
+
+                int lineCount = 0; //goes up one for each full spot
+                for (int i = 0; i < 20; i++) {
+                    int sLine = i; //the specific line that is to be removed   
+                    for (int x = 0; x < 10; x++) {
+                        //2 loops to go through entire 2D array
+                        if (grid[x][i]) {
+                            //if you are here, this spot is full 
+                            lineCount++; //add 1 for every full spot
+                        } //if 
+                    }
+                    if (lineCount > 9) {
+                        //if you are here, EVERY spot on the line is full    
+                        this.linesToRemove.add(sLine); //queued for removal           
+                    } //if 
+                    lineCount = 0; //reset counter      
+                }
+                if (linesToRemove.size() > 0) { //check if rows need to be removed
+                    removeRows();
+                } //if        
                 for (int i = 0; i < 10; i++) {
                     if (grid[i][0]) {
                         playing = false;
                     } //if
                 } //for
 
-                Block temp = nextBlock;
-                nextBlock = makeBlock();
-                mainBlock = temp;
+                mainBlock = nextBlock; //now user is done with the old block
+                nextBlock = makeBlock(); //make new one already
 
-                group.getChildren().addAll(temp.r1, temp.r2, temp.r3, temp.r4); //add the block
+                group.getChildren().addAll(mainBlock.r1, mainBlock.r2, mainBlock.r3, mainBlock.r4);
 
-                group.setOnKeyPressed(keyPressed(temp));
+                group.setOnKeyPressed(keyPressed(mainBlock)); //can be moved
             } //if
 
             keepFalling(block); //method to check if falling should continue
@@ -677,31 +697,14 @@ public class GameOne {
      * @param block The block to be moved
      */
     public void moveLeft(Block block) {
-	/**
-	if (checkLeft(block) == true) {
-	    block.r1.setX(block.r1.getX() - 36);
-	    block.r2.setX(block.r2.getX() - 36);
-	    block.r3.setX(block.r3.getX() - 36);
-	    block.r4.setX(block.r4.getX() - 36);
-	} //if
-	*/
-        try {
-            if (block.r1.getX() - 496 >= 0 && block.r2.getX() - 496 >= 0 &&
-                block.r3.getX() - 496 >= 0 && block.r4.getX() - 496 >= 0 &&
-                !grid[((int)(block.r1.getX() - 460) / 36) - 1][(int)block.r1.getY() / 36] &&
-                !grid[((int)(block.r2.getX() - 460) / 36) - 1][(int)block.r2.getY() / 36] &&
-                !grid[((int)(block.r3.getX() - 460) / 36) - 1][(int)block.r3.getY() / 36] &&
-                !grid[((int)(block.r4.getX() - 460) / 36) - 1][(int)block.r4.getY() / 36])  {
-                //checking if the spot below is free for taking
-                block.r1.setX(block.r1.getX() - 36);
-                block.r2.setX(block.r2.getX() - 36);
-                block.r3.setX(block.r3.getX() - 36);
-                block.r4.setX(block.r4.getX() - 36);
-            } //if
-        } catch (ArrayIndexOutOfBoundsException e) {
-            return; //exit the method
-        } //try-catch
-	
+        
+        if (checkLeft(block) == true) {
+            block.r1.setX(block.r1.getX() - 36);
+            block.r2.setX(block.r2.getX() - 36);
+            block.r3.setX(block.r3.getX() - 36);
+            block.r4.setX(block.r4.getX() - 36);
+        } //if
+        
     } //move left
 
     /**
@@ -711,28 +714,28 @@ public class GameOne {
      * @return true if the block can move
      */
     private boolean checkLeft(Block block) {
-	boolean b = false;
-	int r1x = (int)block.r1.getX() - 460 / 36 - 1;
-        int r2x = (int)block.r2.getX() - 460 / 36 - 1;
-        int r3x = (int)block.r3.getX() - 460 / 36 - 1;
-        int r4x = (int)block.r4.getX() - 460 / 36 - 1;
-	try {
+        boolean b = false;
+        int r1x = ((int)block.r1.getX() - 460) / 36 - 1; //the future x spot
+        int r2x = ((int)block.r2.getX() - 460) / 36 - 1;
+        int r3x = ((int)block.r3.getX() - 460) / 36 - 1;
+        int r4x = ((int)block.r4.getX() - 460) / 36 - 1;
+        try {
             if (block.r1.getX() - 496 >= 0 && block.r2.getX() - 496 >= 0 &&
                 block.r3.getX() - 496 >= 0 && block.r4.getX() - 496 >= 0 &&
                 !grid[r1x][(int)block.r1.getY() / 36] &&
                 !grid[r2x][(int)block.r2.getY() / 36] &&
                 !grid[r3x][(int)block.r3.getY() / 36] &&
                 !grid[r4x][(int)block.r4.getY() / 36])  {
+                //if you are here, the block has all rights to move left
+                b = true; //the block can move
+            } //if
 
-		b = true; //the block can move
-	    } //if
+        } catch (ArrayIndexOutOfBoundsException e) {
+            return false;
+        } //exception
 
-	} catch (ArrayIndexOutOfBoundsException e) {
-	    return false;
-	} //exception
-
-	return b;
-	
+        return b;
+        
     } //block
 
     /**
@@ -741,25 +744,46 @@ public class GameOne {
      * @param block The moving item
      */
     public void moveRight(Block block) {
+
+        if (checkRight(block) == true) {
+            block.r1.setX(block.r1.getX() + 36);
+            block.r2.setX(block.r2.getX() + 36);
+            block.r3.setX(block.r3.getX() + 36);
+            block.r4.setX(block.r4.getX() + 36);
+        } //if 
+
+    } //moveRight
+    
+    /** 
+     * Helper method to see if a move right is open.
+     *
+     * @param block the block to be checked
+     * @return true if the block can move 
+     */
+    private boolean checkRight(Block block) {
+        boolean b = false;
+        int r1x = ((int)block.r1.getX() - 460) / 36 + 1; //the future x spot
+        int r2x = ((int)block.r2.getX() - 460) / 36 + 1;
+        int r3x = ((int)block.r3.getX() - 460) / 36 + 1;
+        int r4x = ((int)block.r4.getX() - 460) / 36 + 1;
         try {
             if (block.r1.getX() - 460 + 36 < 360 && block.r2.getX() - 460 + 36 < 360 &&
                 block.r3.getX() - 460 + 36 < 360 && block.r4.getX() - 460 + 36 < 360 &&
-                !grid[((int)(block.r1.getX() - 460) / 36) + 1][(int)block.r1.getY() / 36] &&
-                !grid[((int)(block.r2.getX() - 460) / 36) + 1][(int)block.r2.getY() / 36] &&
-                !grid[((int)(block.r3.getX() - 460) / 36) + 1][(int)block.r3.getY() / 36] &&
-                !grid[((int)(block.r4.getX() - 460) / 36) + 1][(int)block.r4.getY() / 36])  {
-                //checking if the spot below is free for taking
-                block.r1.setX(block.r1.getX() + 36);
-                block.r2.setX(block.r2.getX() + 36);
-                block.r3.setX(block.r3.getX() + 36);
-                block.r4.setX(block.r4.getX() + 36);
-            } //if
+                !grid[r1x][(int)block.r1.getY() / 36] &&
+                !grid[r2x][(int)block.r2.getY() / 36] &&
+                !grid[r3x][(int)block.r3.getY() / 36] &&
+                !grid[r4x][(int)block.r4.getY() / 36])  {
+                //if you are here, the block has all rights to move right
+                b = true; //the block can move
+            } //if 
+
         } catch (ArrayIndexOutOfBoundsException e) {
-            //this happens when the user tries to move when the block is still falling
-            //They should still be able to attempt to move without getting an exception.
-            return;
-        } //catch
-    }
+            return false;
+        } //exception
+
+        return b;
+
+    } //block  
 
     /**
      * Makes the block to be used.
@@ -945,55 +969,51 @@ public class GameOne {
      *
      *
      */
-    private void cutLines() {
+    private void cutLine() {
         
-        while (this.linesToRemove.size() >= 1) {
-            //loop while there are still lines to be removed
-            score += 100; //add to score            
-            for (int i = 0; i < this.rectangles.size(); i++) {
-                if (this.rectangles.get(i).getY() == this.linesToRemove.get(0) * 36) {
-                    Rectangle rec = this.rectangles.get(i);
-                    grid[(int)((rec.getX() - 460) / 36)][(int)(rec.getY() / 36)] = false;
-                    group.getChildren().remove(rec); //remove the rectangle
-                } else {
-                    Rectangle rec = this.rectangles.get(i);
-                    if (rec.getY() < this.linesToRemove.get(0) * 36) {
-                        this.rectanglesMove.add(rec);
-                    } //if
-                } //else
-            }
-            for (int i = 0; i < this.rectanglesMove.size(); i++) {
-                Rectangle rec = this.rectanglesMove.get(i);
+        score += 100; //add to score for every cut line
+        for (int i = 0; i < this.rectangles.size(); i++) {
+            if (this.rectangles.get(i).getY() == this.linesToRemove.get(0) * 36) {
+                Rectangle rec = this.rectangles.get(i);
                 grid[(int)((rec.getX() - 460) / 36)][(int)(rec.getY() / 36)] = false;
-                grid[(int)((rec.getX() - 460) / 36)][(int)((rec.getY() + 36) / 36)] = true;
-                this.rectanglesMove.get(i).setY(this.rectanglesMove.get(i).getY() + 36);
-          
-            }       
-            
-            this.rectangles = new ArrayList<Rectangle>(); //empty the list
-            this.rectanglesMove = new ArrayList<Rectangle>(); //empty
-
-            int size = group.getChildren().size();          
-            for (int i = 0; i < size; i++) {
-                //transverse through the group
-                Node node = group.getChildren().get(i);
-                if (node instanceof Rectangle) {
-                    //the node needs to be added to the list
-                    this.rectangles.add((Rectangle)node); //add to list
+                group.getChildren().remove(rec); //remove the rectangle
+            } else {
+                Rectangle rec = this.rectangles.get(i);
+                if (rec.getY() < this.linesToRemove.get(0) * 36) {
+                    this.rectanglesMove.add(rec);
                 } //if
-            } //for 
-
-            for (int i = 0; i < this.rectangles.size(); i++) {
-                try {
-                    Rectangle rec = this.rectangles.get(i);
-                    grid[(int)((rec.getX() - 460) / 36)][(int)(rec.getY() / 36)] = true;
-                } catch (IndexOutOfBoundsException e) {
-                    System.out.print("");
-                } //try-catch
-            } //for 
-            this.rectanglesMove = new ArrayList<Rectangle>();
-            this.linesToRemove.remove(0); //take off list
-        } //while  
+            } //else
+        }
+        for (int i = 0; i < this.rectanglesMove.size(); i++) {
+            Rectangle rec = this.rectanglesMove.get(i);
+            grid[(int)((rec.getX() - 460) / 36)][(int)(rec.getY() / 36)] = false;
+            grid[(int)((rec.getX() - 460) / 36)][(int)((rec.getY() + 36) / 36)] = true;
+            this.rectanglesMove.get(i).setY(this.rectanglesMove.get(i).getY() + 36);
+            
+        }       
+        
+        this.rectangles = new ArrayList<Rectangle>(); //empty the list
+        
+        int size = group.getChildren().size();          
+        for (int i = 0; i < size; i++) {
+            //transverse through the group
+            Node node = group.getChildren().get(i);
+            if (node instanceof Rectangle) {
+                //the node needs to be added to the list
+                this.rectangles.add((Rectangle)node); //add to list
+            } //if
+        } //for 
+        
+        for (int i = 0; i < this.rectangles.size(); i++) {
+            try {
+                Rectangle rec = this.rectangles.get(i);
+                grid[(int)((rec.getX() - 460) / 36)][(int)(rec.getY() / 36)] = true;
+            } catch (IndexOutOfBoundsException e) {
+                System.out.print("");
+            } //try-catch
+        } //for 
+        this.rectanglesMove = new ArrayList<Rectangle>();
+        this.linesToRemove.remove(0); //take off list
         
     } //cutLines
 }

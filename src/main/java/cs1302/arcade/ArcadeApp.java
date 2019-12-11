@@ -71,7 +71,7 @@ public class ArcadeApp extends Application {
         Button gameTwoButton = new Button();
         Image imageOne = new Image("file:resources/tetris.png");
         Image imageTwo = new Image("file:resources/chess.png");
-	//        menuBar = menuMaker(); //helper method 
+        //        menuBar = menuMaker(); //helper method 
         
         gameOneButton.setGraphic(new ImageView(imageOne));
         gameTwoButton.setGraphic(new ImageView(imageTwo));
@@ -120,8 +120,8 @@ public class ArcadeApp extends Application {
      * Updates the scene to the previously specified {@code gameState}.
      */
     public void updateScene() {
-        if (gameState.equals("ANIMATION")) {	    
-            stage.setScene(new Scene (animation(), 1280, 720));	    
+        if (gameState.equals("ANIMATION")) {        
+            stage.setScene(new Scene (animation(), 1280, 720));     
         } else if (gameState.equals("MENU")) {
             stage.setScene(new Scene(menu(), 1280, 720));
             stage.setTitle("Menu");
@@ -283,12 +283,10 @@ public class ArcadeApp extends Application {
     /** {@inheritDoc} */
     @Override
     public void start(Stage stage) {
-	MenuBar m = new MenuBar();
+        MenuBar m = new MenuBar();
         this.stage = stage;      
         stage.setTitle("cs1302-arcade!");
-	System.out.println("1");
         updateScene();
-	System.out.println("2");
         stage.sizeToScene();
         stage.setResizable(false);
         stage.show();
