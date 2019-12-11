@@ -50,15 +50,15 @@ import javafx.scene.text.Text;
 public class ArcadeApp extends Application {
 
     VBox vbox;
-    String gameState = "ANIMATION";
+    String gameState = "MENU";
     Stage stage;
     Rectangle projectName = new Rectangle(1280, 720);
     Rectangle teamName = new Rectangle(1280, 720);
     Rectangle name = new Rectangle(1280, 720);
     Timeline timeline = new Timeline();
-    MenuBar menuBar;
+    MenuBar menuBar = menuMaker(); //helper method 
     GameOne gameOne;
-    GameTwo gameTwo;
+    GameTwo gameTwo; 
 
     /**
      * This method creates an HBox called menu and returns it into a new scene.
@@ -71,7 +71,7 @@ public class ArcadeApp extends Application {
         Button gameTwoButton = new Button();
         Image imageOne = new Image("file:resources/tetris.png");
         Image imageTwo = new Image("file:resources/chess.png");
-        menuBar = menuMaker(); //helper method 
+	//        menuBar = menuMaker(); //helper method 
         
         gameOneButton.setGraphic(new ImageView(imageOne));
         gameTwoButton.setGraphic(new ImageView(imageTwo));
@@ -120,8 +120,8 @@ public class ArcadeApp extends Application {
      * Updates the scene to the previously specified {@code gameState}.
      */
     public void updateScene() {
-        if (gameState.equals("ANIMATION")) {
-            stage.setScene(new Scene (animation(), 1280, 720));
+        if (gameState.equals("ANIMATION")) {	    
+            stage.setScene(new Scene (animation(), 1280, 720));	    
         } else if (gameState.equals("MENU")) {
             stage.setScene(new Scene(menu(), 1280, 720));
             stage.setTitle("Menu");
@@ -188,11 +188,11 @@ public class ArcadeApp extends Application {
      *
      * @return The created menu bar to be added to the scene.
      */
-    public MenuBar menuMaker() {       
+    public MenuBar menuMaker() {
         MenuBar menBar = new MenuBar();
         try {
             Menu menu = new Menu("High scores");
-            menBar.getMenus().addAll(menu); //add to bar
+            menBar.getMenus().add(menu); //add to bar
     
             MenuItem tetrisItem = new MenuItem("Tetris");
             MenuItem chessItem = new MenuItem("Chess");
@@ -283,9 +283,12 @@ public class ArcadeApp extends Application {
     /** {@inheritDoc} */
     @Override
     public void start(Stage stage) {
+	MenuBar m = new MenuBar();
         this.stage = stage;      
         stage.setTitle("cs1302-arcade!");
+	System.out.println("1");
         updateScene();
+	System.out.println("2");
         stage.sizeToScene();
         stage.setResizable(false);
         stage.show();

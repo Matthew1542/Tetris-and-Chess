@@ -114,7 +114,11 @@ public class GameOne {
                 }
             });
         group.getChildren().addAll(board, quit, scoreText, levelText);
-        initials = getInitials();
+        try { 
+            initials = getInitials();
+        } catch (NullPointerException npe) {
+            System.out.println("error");
+        } //
         timeline = new Timeline();
         Block temp = nextBlock;
         group.getChildren().addAll(temp.r1, temp.r2, temp.r3, temp.r4);
@@ -276,7 +280,7 @@ public class GameOne {
      *
      * @return The initials input by the user.
      */
-    public String getInitials() {
+    public String getInitials() throws NullPointerException {
        
         TextInputDialog dialog = new TextInputDialog("");
         String initials = "";
@@ -620,7 +624,8 @@ public class GameOne {
                 this.linesToRemove = new ArrayList<Integer>();
                 this.rectangles = new ArrayList<Rectangle>();
                 this.rectanglesMove = new ArrayList<Rectangle>();
-                removeRows(); //helper method to clear rows
+        
+                removeRows(); //helper method to clear rows     
                 for (int i = 0; i < 10; i++) {
                     if (grid[i][0]) {
                         playing = false;
@@ -922,9 +927,8 @@ public class GameOne {
                 grid[(int)((rec.getX() - 460) / 36)][(int)((rec.getY() + 36) / 36)] = true;
                 this.rectanglesMove.get(i).setY(this.rectanglesMove.get(i).getY() + 36);
           
-            }
-            this.linesToRemove.remove(0); //take off list
-
+            }       
+            
             this.rectangles = new ArrayList<Rectangle>(); //empty the list
             this.rectanglesMove = new ArrayList<Rectangle>(); //empty
 
@@ -947,6 +951,7 @@ public class GameOne {
                 } //try-catch
             } //for 
             this.rectanglesMove = new ArrayList<Rectangle>();
+            this.linesToRemove.remove(0); //take off list
         } //while  
         
     } //cutLines
