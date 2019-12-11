@@ -70,3 +70,5 @@ that the Markdown is transformed into nice looking HTML.
 7. **DONE:** Animated intro has been implemented (extra credit).
 
 8. **DONE:** High score table has been implemented (extra credit).
+
+9. **DONE:** Just to mention this, all of the images were created by us in photoshop!
