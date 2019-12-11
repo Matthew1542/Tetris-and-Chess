@@ -15,6 +15,7 @@ public class ArcadeDriver {
         try {
             Application.launch(ArcadeApp.class, args);
         } catch (UnsupportedOperationException e) {
+	    e.printStackTrace();
             System.out.println(e);
             System.err.println("If this is a DISPLAY problem, then your X server connection");
             System.err.println("has likely timed out. This can generally be fixed by logging");

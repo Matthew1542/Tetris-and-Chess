@@ -57,11 +57,12 @@ public class GameOne {
     /** Images to be used to the sides of the main game. */
     ImageView board = new ImageView(new Image("file:resources/board.png"));
 
+    //Lists involved when a row is full and must be removed
     /** List to hold all of the lines that are to be removed. */ 
-    ArrayList<Integer> linesToRemove = new ArrayList<Integer>();
+    ArrayList<Integer> linesToRemove = new ArrayList<>();
 
     /** List to hold all of the rectangles to be removed. */
-    ArrayList<Rectangle> rectangles = new ArrayList<Rectangle>();
+    ArrayList<Rectangle> rectangles = new ArrayList<>();
 
     /** List to hold all of the rectangles to fall after deleting lines. */
     ArrayList<Rectangle> rectanglesMove = new ArrayList<Rectangle>();
@@ -676,6 +677,14 @@ public class GameOne {
      * @param block The block to be moved
      */
     public void moveLeft(Block block) {
+	/**
+	if (checkLeft(block) == true) {
+	    block.r1.setX(block.r1.getX() - 36);
+	    block.r2.setX(block.r2.getX() - 36);
+	    block.r3.setX(block.r3.getX() - 36);
+	    block.r4.setX(block.r4.getX() - 36);
+	} //if
+	*/
         try {
             if (block.r1.getX() - 496 >= 0 && block.r2.getX() - 496 >= 0 &&
                 block.r3.getX() - 496 >= 0 && block.r4.getX() - 496 >= 0 &&
@@ -692,7 +701,39 @@ public class GameOne {
         } catch (ArrayIndexOutOfBoundsException e) {
             return; //exit the method
         } //try-catch
+	
     } //move left
+
+    /**
+     * Helper method to see if a move left is open.
+     *
+     * @param block the block to be checked
+     * @return true if the block can move
+     */
+    private boolean checkLeft(Block block) {
+	boolean b = false;
+	int r1x = (int)block.r1.getX() - 460 / 36 - 1;
+        int r2x = (int)block.r2.getX() - 460 / 36 - 1;
+        int r3x = (int)block.r3.getX() - 460 / 36 - 1;
+        int r4x = (int)block.r4.getX() - 460 / 36 - 1;
+	try {
+            if (block.r1.getX() - 496 >= 0 && block.r2.getX() - 496 >= 0 &&
+                block.r3.getX() - 496 >= 0 && block.r4.getX() - 496 >= 0 &&
+                !grid[r1x][(int)block.r1.getY() / 36] &&
+                !grid[r2x][(int)block.r2.getY() / 36] &&
+                !grid[r3x][(int)block.r3.getY() / 36] &&
+                !grid[r4x][(int)block.r4.getY() / 36])  {
+
+		b = true; //the block can move
+	    } //if
+
+	} catch (ArrayIndexOutOfBoundsException e) {
+	    return false;
+	} //exception
+
+	return b;
+	
+    } //block
 
     /**
      * Moves block to the right.
