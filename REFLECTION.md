@@ -8,7 +8,7 @@ that the Markdown is transformed into nice looking HTML.
 
 ## SUN 2019-04-05 @ 11:55 PM EST
 
-1. **DONE:** Downloaded the skeleton code.
+1. **DONE:** Downloaded the skeleton code!
 
 2. **TODO:** Finish reading the project description.
 
